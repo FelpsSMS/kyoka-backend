@@ -8,8 +8,13 @@ import {
   Delete,
   UseInterceptors,
   UploadedFile,
+  UploadedFiles,
 } from "@nestjs/common";
-import { FileInterceptor } from "@nestjs/platform-express";
+import {
+  FileFieldsInterceptor,
+  FileInterceptor,
+  FilesInterceptor,
+} from "@nestjs/platform-express";
 import { CardsService } from "./cards.service";
 import { CreateCardDto } from "./dto/create-card.dto";
 import { UpdateCardDto } from "./dto/update-card.dto";
@@ -19,17 +24,29 @@ export class CardsController {
   constructor(private readonly cardsService: CardsService) {}
 
   @Post()
-  @UseInterceptors(FileInterceptor("image"))
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: "image", maxCount: 5 },
+      { name: "sentence_audio", maxCount: 1 },
+      { name: "focus_audio", maxCount: 1 },
+    ]),
+  )
   create(
     @Body() createCardDto: CreateCardDto,
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFiles() files: Array<Express.Multer.File>,
   ) {
-    return this.cardsService.create(createCardDto, file);
+    //console.log(files);
+    return this.cardsService.create(createCardDto, files);
   }
 
   @Get()
   findAll() {
     return this.cardsService.findAll();
+  }
+
+  @Get()
+  getCardsByDeckId(@Param("DeckId") deckId: string) {
+    return "Get cards by deck id";
   }
 
   @Get(":id")

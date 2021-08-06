@@ -3,9 +3,10 @@ export class CreateCardDto {
   focus: string;
   bilingualDescription: string;
   monolingualDescription: string;
-  sentenceAudio: Express.Multer.File;
-  focusAudio: Express.Multer.File;
+  sentenceAudio: string[];
+  focusAudio: string[];
   translation: string;
   notes: string;
-  images: Express.Multer.File[];
+  images: string[];
+  deck: string;
 }
