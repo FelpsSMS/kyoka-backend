@@ -31,6 +31,13 @@ export class Card {
 
   @Prop()
   images: string[];
+
+  @Prop()
+  deck: string;
+
+  dateAdded = Date.now;
+  dateDue = Date.now;
+  lapses = 0;
 }
 
 export const CardSchema = SchemaFactory.createForClass(Card);

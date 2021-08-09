@@ -7,10 +7,7 @@ import { Deck, DeckDocument } from "./entities/deck.entity";
 
 @Injectable()
 export class DecksService {
-  constructor(
-    //@InjectConnection("decks") private connection: Connection,
-    @InjectModel(Deck.name) private deckModel: Model<DeckDocument>,
-  ) {}
+  constructor(@InjectModel(Deck.name) private deckModel: Model<DeckDocument>) {}
 
   create(createDeckDto: CreateDeckDto) {
     const deck = new this.deckModel(createDeckDto);

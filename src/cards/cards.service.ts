@@ -31,9 +31,18 @@ export class CardsService {
   ) {
     const card = new this.cardModel(createCardDto);
 
-    const imageFiles = files["image"];
-    const sentenceAudioFiles = files["sentence_audio"];
-    const focusAudioFiles = files["focus_audio"];
+    const imageFiles = [
+      files["image1Holder"],
+      files["image2Holder"],
+      files["image1Holder"],
+      files["image4Holder"],
+    ];
+    const sentenceAudioFiles = files["sentenceAudioHolder"];
+    const focusAudioFiles = files["focusAudioHolder"];
+
+    console.log(imageFiles);
+    console.log(sentenceAudioFiles);
+    console.log(focusAudioFiles);
 
     let imageUrls: string[] = [];
     let sentenceAudioUrls: string[] = [];
@@ -85,7 +94,7 @@ export class CardsService {
   }
 
   getCardsByDeckId(deckId: string) {
-    return this.cardModel.findOne({ deck: { deckId } });
+    return this.cardModel.find({ deck: deckId });
   }
 
   findAll() {

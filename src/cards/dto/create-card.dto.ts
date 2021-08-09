@@ -9,4 +9,7 @@ export class CreateCardDto {
   notes: string;
   images: string[];
   deck: string;
+  dateAdded: Date;
+  dateDue: Date;
+  lapses: number;
 }

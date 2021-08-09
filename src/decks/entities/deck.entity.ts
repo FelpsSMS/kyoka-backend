@@ -7,12 +7,6 @@ export type DeckDocument = Deck & Document;
 export class Deck {
   @Prop()
   name: string;
-
-  @Prop()
-  cards: string;
-
-  @Prop()
-  numberOfCards: number;
 }
 
 export const DeckSchema = SchemaFactory.createForClass(Deck);
