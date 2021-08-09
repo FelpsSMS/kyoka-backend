@@ -31,18 +31,9 @@ export class CardsService {
   ) {
     const card = new this.cardModel(createCardDto);
 
-    const imageFiles = [
-      files["image1Holder"],
-      files["image2Holder"],
-      files["image1Holder"],
-      files["image4Holder"],
-    ];
-    const sentenceAudioFiles = files["sentenceAudioHolder"];
-    const focusAudioFiles = files["focusAudioHolder"];
-
-    console.log(imageFiles);
-    console.log(sentenceAudioFiles);
-    console.log(focusAudioFiles);
+    const imageFiles = files["images"];
+    const sentenceAudioFiles = files["sentence_audio"];
+    const focusAudioFiles = files["focus_audio"];
 
     let imageUrls: string[] = [];
     let sentenceAudioUrls: string[] = [];

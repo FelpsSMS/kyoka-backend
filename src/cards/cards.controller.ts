@@ -21,19 +21,15 @@ export class CardsController {
   @Post()
   @UseInterceptors(
     FileFieldsInterceptor([
-      { name: "image1Holder", maxCount: 1 },
-      { name: "image2Holder", maxCount: 1 },
-      { name: "image3Holder", maxCount: 1 },
-      { name: "image4Holder", maxCount: 1 },
-      { name: "sentenceAudioHolder", maxCount: 1 },
-      { name: "focusAudioHolder", maxCount: 1 },
+      { name: "images", maxCount: 4 },
+      { name: "sentence_audio", maxCount: 1 },
+      { name: "focus_audio", maxCount: 1 },
     ]),
   )
   create(
     @Body() createCardDto: CreateCardDto,
     @UploadedFiles() files: Array<Express.Multer.File>,
   ) {
-    //console.log(files);
     return this.cardsService.create(createCardDto, files);
   }
 
