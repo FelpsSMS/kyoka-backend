@@ -80,7 +80,6 @@ export class CardsService {
       }),
     );
 
-    console.log(card);
     card.save();
   }
 
@@ -92,15 +91,29 @@ export class CardsService {
     return `This action returns all cards`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} card`;
+  findOne(id: string) {
+    return this.cardModel.findById(id);
   }
 
-  update(id: number, updateCardDto: UpdateCardDto) {
-    return `This action updates a #${id} card`;
+  update(id: string, updateCardDto: UpdateCardDto) {
+    return this.cardModel.findByIdAndUpdate(
+      {
+        _id: id,
+      },
+      {
+        $set: updateCardDto,
+      },
+      {
+        new: true,
+      },
+    );
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} card`;
+  remove(id: string) {
+    return this.cardModel
+      .deleteOne({
+        _id: id,
+      })
+      .exec();
   }
 }
