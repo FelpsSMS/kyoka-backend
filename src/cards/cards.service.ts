@@ -39,47 +39,52 @@ export class CardsService {
     let sentenceAudioUrls: string[] = [];
     let focusAudioUrls: string[] = [];
 
-    await Promise.all(
-      imageFiles.map(async (image) => {
-        const imageUrl = await this.uploadImageToCloudinary(image).then(
-          (res) => {
+    if (imageFiles) {
+      await Promise.all(
+        imageFiles.map(async (image) => {
+          const imageUrl = await this.uploadImageToCloudinary(image).then(
+            (res) => {
+              return res.url;
+            },
+          );
+
+          imageUrls = [...imageUrls, imageUrl];
+          card.images = imageUrls;
+        }),
+      );
+    }
+
+    if (sentenceAudioFiles) {
+      await Promise.all(
+        sentenceAudioFiles.map(async (audio) => {
+          const sentenceAudioUrl = await this.uploadAudioToCloudinary(
+            audio,
+          ).then((res) => {
             return res.url;
-          },
-        );
+          });
 
-        imageUrls = [...imageUrls, imageUrl];
-        card.images = imageUrls;
-      }),
-    );
+          sentenceAudioUrls = [...sentenceAudioUrls, sentenceAudioUrl];
 
-    await Promise.all(
-      sentenceAudioFiles.map(async (audio) => {
-        const sentenceAudioUrl = await this.uploadAudioToCloudinary(audio).then(
-          (res) => {
-            return res.url;
-          },
-        );
+          card.sentenceAudio = sentenceAudioUrls;
+        }),
+      );
+    }
 
-        sentenceAudioUrls = [...sentenceAudioUrls, sentenceAudioUrl];
+    if (focusAudioFiles) {
+      await Promise.all(
+        focusAudioFiles.map(async (audio) => {
+          const focusAudioUrl = await this.uploadAudioToCloudinary(audio).then(
+            (res) => {
+              return res.url;
+            },
+          );
 
-        card.sentenceAudio = sentenceAudioUrls;
-      }),
-    );
+          focusAudioUrls = [...focusAudioUrls, focusAudioUrl];
 
-    await Promise.all(
-      focusAudioFiles.map(async (audio) => {
-        const focusAudioUrl = await this.uploadAudioToCloudinary(audio).then(
-          (res) => {
-            return res.url;
-          },
-        );
-
-        focusAudioUrls = [...focusAudioUrls, focusAudioUrl];
-
-        card.focusAudio = focusAudioUrls;
-      }),
-    );
-
+          card.focusAudio = focusAudioUrls;
+        }),
+      );
+    }
     card.save();
   }
 
@@ -95,7 +100,71 @@ export class CardsService {
     return this.cardModel.findById(id);
   }
 
-  update(id: string, updateCardDto: UpdateCardDto) {
+  async update(id: string, updateCardDto: UpdateCardDto, files) {
+    const imageStrings = updateCardDto.imageStrings;
+    const imageFiles = files["images"];
+    const sentenceAudioFiles = files["sentence_audio"];
+    const focusAudioFiles = files["focus_audio"];
+
+    let imageUrls: string[] = [];
+    let sentenceAudioUrls: string[] = [];
+    let focusAudioUrls: string[] = [];
+
+    if (imageFiles) {
+      await Promise.all(
+        imageFiles.map(async (image) => {
+          const imageUrl = await this.uploadImageToCloudinary(image).then(
+            (res) => {
+              return res.url;
+            },
+          );
+
+          imageUrls = [...imageUrls, imageUrl];
+          updateCardDto.images = imageUrls;
+        }),
+      );
+    }
+
+    if (imageStrings) {
+      imageStrings.map((imageUrl) => {
+        imageUrls = [...imageUrls, imageUrl];
+        updateCardDto.images = imageUrls;
+      });
+    }
+
+    if (sentenceAudioFiles) {
+      await Promise.all(
+        sentenceAudioFiles.map(async (audio) => {
+          const sentenceAudioUrl = await this.uploadAudioToCloudinary(
+            audio,
+          ).then((res) => {
+            return res.url;
+          });
+
+          sentenceAudioUrls = [...sentenceAudioUrls, sentenceAudioUrl];
+
+          updateCardDto.sentenceAudio = sentenceAudioUrls;
+        }),
+      );
+    }
+
+    if (focusAudioFiles) {
+      await Promise.all(
+        focusAudioFiles.map(async (audio) => {
+          const focusAudioUrl = await this.uploadAudioToCloudinary(audio).then(
+            (res) => {
+              return res.url;
+            },
+          );
+
+          focusAudioUrls = [...focusAudioUrls, focusAudioUrl];
+
+          updateCardDto.focusAudio = focusAudioUrls;
+        }),
+      );
+    }
+    console.log(updateCardDto);
+
     return this.cardModel.findByIdAndUpdate(
       {
         _id: id,

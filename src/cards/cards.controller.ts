@@ -49,8 +49,20 @@ export class CardsController {
   }
 
   @Patch(":id")
-  update(@Param("id") id: string, @Body() updateCardDto: UpdateCardDto) {
-    return this.cardsService.update(id, updateCardDto);
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: "images", maxCount: 4 },
+      { name: "sentence_audio", maxCount: 1 },
+      { name: "focus_audio", maxCount: 1 },
+    ]),
+  )
+  update(
+    @Param("id") id: string,
+
+    @Body() updateCardDto: UpdateCardDto,
+    @UploadedFiles() files: Array<Express.Multer.File>,
+  ) {
+    return this.cardsService.update(id, updateCardDto, files);
   }
 
   @Delete(":id")
