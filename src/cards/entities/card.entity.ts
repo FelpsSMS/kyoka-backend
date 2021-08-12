@@ -35,9 +35,14 @@ export class Card {
   @Prop()
   deck: string;
 
-  dateAdded = Date.now;
-  dateDue = Date.now;
-  lapses = 0;
+  @Prop({ default: Date.now })
+  dateAdded: Date;
+
+  @Prop({ default: Date.now })
+  dateDue: Date;
+
+  @Prop({ default: 0 })
+  lapses: number;
 }
 
 export const CardSchema = SchemaFactory.createForClass(Card);
