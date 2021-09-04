@@ -5,7 +5,7 @@ export type DeckDocument = Deck & Document;
 
 @Schema()
 export class Deck {
-  @Prop()
+  @Prop({ required: true, unique: true, indexed: true })
   name: string;
 }
 

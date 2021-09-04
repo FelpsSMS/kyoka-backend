@@ -9,7 +9,11 @@ import { ConfigModule } from "@nestjs/config";
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    MongooseModule.forRoot(process.env.DATABASE_CONN),
+    MongooseModule.forRoot(process.env.DATABASE_CONN, {
+      useCreateIndex: true,
+      autoIndex: true,
+      useFindAndModify: false,
+    }),
     DecksModule,
     CardsModule,
     CloudinaryModule,
