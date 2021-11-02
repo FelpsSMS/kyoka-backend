@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Res,
 } from "@nestjs/common";
 import { UsersService } from "./users.service";
 import { CreateUserDto } from "./dto/create-user.dto";
@@ -18,6 +19,19 @@ export class UsersController {
   @Post("login")
   login(@Body() createUserDto: CreateUserDto) {
     return this.usersService.login(createUserDto);
+  }
+
+  @Post("forgot")
+  forgot(@Body() { email }: any) {
+    return this.usersService.forgot(email);
+  }
+
+  //@Redirect(process.env.APP_HOST)
+  @Get(":resetCode")
+  resetPassword(@Param("resetCode") resetCode: string, @Res() res) {
+    this.usersService.resetPassword(resetCode);
+
+    res.redirect(process.env.APP_HOST);
   }
 
   @Post()
@@ -37,7 +51,7 @@ export class UsersController {
 
   @Patch(":id")
   update(@Param("id") id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
+    return this.usersService.update(id, updateUserDto);
   }
 
   @Delete(":id")
