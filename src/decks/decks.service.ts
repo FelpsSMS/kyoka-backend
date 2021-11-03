@@ -37,6 +37,10 @@ export class DecksService {
     );
   }
 
+  getDecksForUser(deckId: string) {
+    return this.deckModel.findById(deckId);
+  }
+
   remove(id: string) {
     return this.deckModel
       .deleteOne({

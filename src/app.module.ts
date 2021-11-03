@@ -6,6 +6,7 @@ import { CloudinaryModule } from "./cloudinary/cloudinary.module";
 import { Cloudinary } from "./cloudinary";
 import { ConfigModule } from "@nestjs/config";
 import { UsersModule } from "./users/users.module";
+import { DeckStatsModule } from "./deck-stats/deck-stats.module";
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { UsersModule } from "./users/users.module";
     CardsModule,
     CloudinaryModule,
     UsersModule,
+    DeckStatsModule,
   ],
   controllers: [],
   providers: [Cloudinary],
