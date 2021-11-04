@@ -8,14 +8,30 @@ export class User {
   @Prop({ required: true, unique: true, indexed: true })
   email: string;
 
-  @Prop()
+  @Prop({ required: true })
   password: string;
 
-  @Prop({ default: uuidv4() })
+  @Prop({ required: true, default: uuidv4() })
   resetCode: string;
 
-  @Prop({ default: Date.now })
+  @Prop({ required: true, default: Date.now })
   resetTimer: number;
+
+  @Prop({ required: true, default: false })
+  isVerified: boolean;
+
+  //reset time will be the same for everyone for now
+
+  @Prop({ required: true, default: 10 })
+  numberOfNewCards: number;
+
+  @Prop({ required: true, default: 8 })
+  lapseThreshold: number;
+
+  @Prop({ required: true, default: false })
+  removeLeeches: boolean;
+
+  //start date can be determined by a cookie
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

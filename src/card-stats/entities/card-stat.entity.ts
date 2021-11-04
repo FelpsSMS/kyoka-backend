@@ -33,6 +33,9 @@ export class CardStat {
 
   @Prop({ required: true, default: false })
   leech: boolean;
+
+  @Prop({ required: true, default: 2.5 })
+  EF: number;
 }
 
 export const CardStatSchema = SchemaFactory.createForClass(CardStat);
