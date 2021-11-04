@@ -25,7 +25,7 @@ export class CardStat {
   @Prop({ required: true, default: 0 })
   totalLapses: number;
 
-  @Prop({ required: true, default: 0 }) //states: 0 - queued, 1 - new, 2 - learning, 3 - relearning, 4 - reviewing
+  @Prop({ required: true, default: 0 }) //states: 0 - new, 1 - learning, 2 - relearning, 3- reviewing
   state: number;
 
   @Prop({ required: true, default: false })
@@ -35,7 +35,10 @@ export class CardStat {
   leech: boolean;
 
   @Prop({ required: true, default: 2.5 })
-  EF: number;
+  efactor: number;
+
+  @Prop({ required: true, default: 0 })
+  repetitions: number;
 }
 
 export const CardStatSchema = SchemaFactory.createForClass(CardStat);

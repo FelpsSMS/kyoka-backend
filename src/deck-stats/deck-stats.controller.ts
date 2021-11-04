@@ -25,6 +25,11 @@ export class DeckStatsController {
     return this.deckStatsService.getDecksByUser(body);
   }
 
+  @Post("stats")
+  getSRSStats(@Body() body: any) {
+    return this.deckStatsService.getSRSStats(body);
+  }
+
   @Get()
   findAll() {
     return this.deckStatsService.findAll();

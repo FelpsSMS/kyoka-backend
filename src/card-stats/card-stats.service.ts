@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
+import { srsalgo } from "src/srsalgo";
 import { CreateCardStatDto } from "./dto/create-card-stat.dto";
 import { UpdateCardStatDto } from "./dto/update-card-stat.dto";
 import { CardStat, CardStatDocument } from "./entities/card-stat.entity";
@@ -19,6 +20,17 @@ export class CardStatsService {
 
   getStatsByCard(body: any) {
     return this.cardStatModel.find({ card: body.cardId });
+  }
+
+  calculateSRSStats(body: any) {
+    console.log(
+      srsalgo({
+        repetitions: body.repetitions,
+        efactor: body.efactor,
+        dueDate: body.dueDate,
+        pass: body.pass,
+      }),
+    );
   }
 
   findAll() {

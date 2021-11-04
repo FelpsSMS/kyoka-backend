@@ -25,6 +25,11 @@ export class CardStatsController {
     return this.cardStatsService.getStatsByCard(body);
   }
 
+  @Post("srs")
+  calculateSRSStats(@Body() body: any) {
+    return this.cardStatsService.calculateSRSStats(body);
+  }
+
   @Get()
   findAll() {
     return this.cardStatsService.findAll();

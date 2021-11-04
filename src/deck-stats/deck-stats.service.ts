@@ -21,6 +21,10 @@ export class DeckStatsService {
     return this.deckStatModel.find({ user: body.userId });
   }
 
+  getSRSStats(body: any) {
+    return this.deckStatModel.find({ deck: body.deckId });
+  }
+
   findAll() {
     return `This action returns all deckStats`;
   }

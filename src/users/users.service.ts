@@ -13,6 +13,16 @@ import { v4 as uuidv4 } from "uuid";
 export class UsersService {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
+  async findUserById(id: string) {
+    const user = await this.userModel.findById(id).exec();
+
+    return {
+      numberOfNewCards: user.numberOfNewCards,
+      lapseThreshold: user.lapseThreshold,
+      removeLeeches: user.removeLeeches,
+    };
+  }
+
   async create(createUserDto: CreateUserDto) {
     const saltOrRounds = 10;
     const plainTextPassword = createUserDto["password"];
