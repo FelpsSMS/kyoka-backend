@@ -8,7 +8,7 @@ export class Card {
   @Prop()
   sentence: string;
 
-  @Prop()
+  @Prop({ required: true })
   focus: string;
 
   @Prop()
@@ -32,17 +32,11 @@ export class Card {
   @Prop()
   images: string[];
 
-  @Prop()
+  @Prop({ required: true })
   deck: string;
 
   @Prop({ default: Date.now })
   dateAdded: Date;
-
-  @Prop({ default: Date.now })
-  dateDue: Date;
-
-  @Prop({ default: 0 })
-  lapses: number;
 }
 
 export const CardSchema = SchemaFactory.createForClass(Card);

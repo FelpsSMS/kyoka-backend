@@ -86,6 +86,8 @@ export class CardsService {
       );
     }
     card.save();
+
+    return card;
   }
 
   getCardsByDeckId(deckId: string) {
