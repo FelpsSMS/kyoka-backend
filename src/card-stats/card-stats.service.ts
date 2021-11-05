@@ -23,14 +23,18 @@ export class CardStatsService {
   }
 
   calculateSRSStats(body: any) {
-    console.log(
-      srsalgo({
-        repetitions: body.repetitions,
-        efactor: body.efactor,
-        dueDate: body.dueDate,
-        pass: body.pass,
-      }),
-    );
+    const result = srsalgo({
+      repetitions: body.repetitions,
+      efactor: body.efactor,
+      dueDate: body.dueDate,
+      pass: body.pass,
+    });
+
+    return this.update(body.statId, {
+      repetitions: result.repetitions,
+      efactor: result.newEfactor,
+      dueDate: result.newDueDate,
+    });
   }
 
   findAll() {
@@ -41,8 +45,18 @@ export class CardStatsService {
     return `This action returns a #${id} cardStat`;
   }
 
-  update(id: number, updateCardStatDto: UpdateCardStatDto) {
-    return `This action updates a #${id} cardStat`;
+  update(id: string, updateCardStatDto: UpdateCardStatDto) {
+    return this.cardStatModel.findByIdAndUpdate(
+      {
+        _id: id,
+      },
+      {
+        $set: updateCardStatDto,
+      },
+      {
+        new: true,
+      },
+    );
   }
 
   remove(id: number) {

@@ -5,7 +5,7 @@ export function srsalgo({ repetitions, efactor, dueDate, pass }) {
   console.log(interval);
 
   if (pass) {
-    quality = 3;
+    quality = 4;
   }
 
   efactor = Math.max(

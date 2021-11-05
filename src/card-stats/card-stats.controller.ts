@@ -45,7 +45,7 @@ export class CardStatsController {
     @Param("id") id: string,
     @Body() updateCardStatDto: UpdateCardStatDto,
   ) {
-    return this.cardStatsService.update(+id, updateCardStatDto);
+    return this.cardStatsService.update(id, updateCardStatDto);
   }
 
   @Delete(":id")
