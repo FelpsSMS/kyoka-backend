@@ -165,7 +165,6 @@ export class CardsService {
         }),
       );
     }
-    console.log(updateCardDto);
 
     return this.cardModel.findByIdAndUpdate(
       {

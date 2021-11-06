@@ -25,6 +25,14 @@ export class DeckStatsService {
     return this.deckStatModel.find({ deck: body.deckId });
   }
 
+  async deleteStatsByDeck(body: any) {
+    const stats: any = await this.deckStatModel
+      .find({ deck: body.deckId })
+      .exec();
+
+    return this.remove(stats[0]._id);
+  }
+
   findAll() {
     return `This action returns all deckStats`;
   }
@@ -37,7 +45,11 @@ export class DeckStatsService {
     return `This action updates a #${id} deckStat`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} deckStat`;
+  remove(id: string) {
+    return this.deckStatModel
+      .deleteOne({
+        _id: id,
+      })
+      .exec();
   }
 }

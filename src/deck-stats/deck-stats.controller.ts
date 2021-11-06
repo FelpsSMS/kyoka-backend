@@ -30,6 +30,11 @@ export class DeckStatsController {
     return this.deckStatsService.getSRSStats(body);
   }
 
+  @Post("delete-by-deck-id")
+  deleteStatsByDeck(@Body() body: any) {
+    return this.deckStatsService.deleteStatsByDeck(body);
+  }
+
   @Get()
   findAll() {
     return this.deckStatsService.findAll();
@@ -50,6 +55,6 @@ export class DeckStatsController {
 
   @Delete(":id")
   remove(@Param("id") id: string) {
-    return this.deckStatsService.remove(+id);
+    return this.deckStatsService.remove(id);
   }
 }

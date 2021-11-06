@@ -22,6 +22,14 @@ export class CardStatsService {
     return this.cardStatModel.find({ card: body.cardId });
   }
 
+  async deleteStatsByCard(body: any) {
+    const stats: any = await this.cardStatModel
+      .find({ card: body.cardId })
+      .exec();
+
+    return this.remove(stats[0]._id);
+  }
+
   calculateSRSStats(body: any) {
     const result = srsalgo({
       repetitions: body.repetitions,
@@ -59,7 +67,11 @@ export class CardStatsService {
     );
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} cardStat`;
+  remove(id: string) {
+    return this.cardStatModel
+      .deleteOne({
+        _id: id,
+      })
+      .exec();
   }
 }

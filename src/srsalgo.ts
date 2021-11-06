@@ -1,6 +1,22 @@
+const millisecondsInDay = 60 * 60 * 24 * 1000;
+
+function getDiffInDays(a, b) {
+  // a and b are javascript Date objects
+  // Discard the time and time-zone information.
+  const utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
+  const utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
+
+  return Math.floor((utc2 - utc1) / millisecondsInDay);
+}
+
+// test it
+/*   const a = new Date("2017-01-01"),
+    b = new Date("2017-07-25"),
+    difference = dateDiffInDays(a, b); */
+
 export function srsalgo({ repetitions, efactor, dueDate, pass }) {
   let quality = 0;
-  let interval = dueDate - Date.now();
+  let interval = getDiffInDays(new Date(dueDate), new Date());
 
   console.log(interval);
 
@@ -27,7 +43,6 @@ export function srsalgo({ repetitions, efactor, dueDate, pass }) {
     interval = Math.round(interval * efactor);
   }
 
-  const millisecondsInDay = 60 * 60 * 24 * 1000;
   const newDueDate = Date.now() + millisecondsInDay * interval;
 
   return {

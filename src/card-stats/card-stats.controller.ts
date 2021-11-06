@@ -30,6 +30,11 @@ export class CardStatsController {
     return this.cardStatsService.calculateSRSStats(body);
   }
 
+  @Post("delete-by-card-id")
+  deleteStatsByCard(@Body() body: any) {
+    return this.cardStatsService.deleteStatsByCard(body);
+  }
+
   @Get()
   findAll() {
     return this.cardStatsService.findAll();
@@ -50,6 +55,6 @@ export class CardStatsController {
 
   @Delete(":id")
   remove(@Param("id") id: string) {
-    return this.cardStatsService.remove(+id);
+    return this.cardStatsService.remove(id);
   }
 }

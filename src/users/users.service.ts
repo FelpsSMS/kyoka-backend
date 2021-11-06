@@ -34,7 +34,7 @@ export class UsersService {
 
     user.save();
 
-    console.log("Salvo");
+    console.log("Saved");
   }
 
   async resetPassword(resetCode: string) {
