@@ -6,13 +6,8 @@ function getDiffInDays(a, b) {
   const utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
   const utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
 
-  return Math.floor((utc2 - utc1) / millisecondsInDay);
+  return Math.abs(Math.floor((utc2 - utc1) / millisecondsInDay));
 }
-
-// test it
-/*   const a = new Date("2017-01-01"),
-    b = new Date("2017-07-25"),
-    difference = dateDiffInDays(a, b); */
 
 export function srsalgo({ repetitions, efactor, dueDate, pass }) {
   let quality = 0;
