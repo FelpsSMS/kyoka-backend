@@ -35,26 +35,31 @@ export class DeckStatsController {
     return this.deckStatsService.deleteStatsByDeck(body);
   }
 
-  @Get()
+  @Post("update")
+  updateActive(@Body() body: any) {
+    return this.deckStatsService.updateActive(body);
+  }
+
+  /*   @Get()
   findAll() {
     return this.deckStatsService.findAll();
-  }
+  } */
 
-  @Get(":id")
+  /*   @Get(":id")
   findOne(@Param("id") id: string) {
     return this.deckStatsService.findOne(+id);
-  }
+  } */
 
-  @Patch(":id")
+  /*   @Patch(":id")
   update(
     @Param("id") id: string,
     @Body() updateDeckStatDto: UpdateDeckStatDto,
   ) {
-    return this.deckStatsService.update(+id, updateDeckStatDto);
-  }
+    return this.deckStatsService.update(id, updateDeckStatDto);
+  } */
 
-  @Delete(":id")
+  /*   @Delete(":id")
   remove(@Param("id") id: string) {
     return this.deckStatsService.remove(id);
-  }
+  } */
 }

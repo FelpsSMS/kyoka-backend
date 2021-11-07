@@ -33,12 +33,16 @@ export function srsalgo({ repetitions, efactor, dueDate, pass }) {
   if (repetitions <= 1) {
     interval = 1;
   } else if (repetitions == 2) {
-    interval = 6;
+    interval = 3; //original is 6, but I think 3 makes more sense
   } else {
     interval = Math.round(interval * efactor);
   }
 
-  const newDueDate = Date.now() + millisecondsInDay * interval;
+  let newDueDate = Date.now();
+
+  if (quality > 3) {
+    newDueDate = Date.now() + millisecondsInDay * interval;
+  }
 
   return {
     newDueDate: newDueDate,

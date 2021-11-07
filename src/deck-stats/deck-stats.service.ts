@@ -30,7 +30,7 @@ export class DeckStatsService {
       .find({ deck: body.deckId })
       .exec();
 
-    return this.remove(stats[0]._id);
+    if (!stats[0].readOnly) return this.remove(stats[0]._id);
   }
 
   findAll() {
@@ -41,8 +41,41 @@ export class DeckStatsService {
     return `This action returns a #${id} deckStat`;
   }
 
-  update(id: number, updateDeckStatDto: UpdateDeckStatDto) {
-    return `This action updates a #${id} deckStat`;
+  async updateActive(body: any) {
+    const stats: any = await this.deckStatModel
+      .find({ deck: body.deckId })
+      .exec();
+
+    console.log(stats[0]);
+    console.log(body.updateBody);
+
+    return this.deckStatModel.findByIdAndUpdate(
+      {
+        _id: stats[0]._id,
+      },
+      {
+        $set: body.updateBody,
+      },
+      {
+        new: true,
+      },
+    );
+  }
+
+  async update(id: string, updateDeckStatDto: UpdateDeckStatDto) {
+    const stats: any = await this.deckStatModel.find({ deck: id }).exec();
+
+    return this.deckStatModel.findByIdAndUpdate(
+      {
+        _id: stats._id,
+      },
+      {
+        $set: updateDeckStatDto,
+      },
+      {
+        new: true,
+      },
+    );
   }
 
   remove(id: string) {
