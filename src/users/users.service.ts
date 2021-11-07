@@ -81,19 +81,19 @@ export class UsersService {
     let token = null;
 
     if (user) {
-      const isMatch = await bcrypt.compare(
-        createUserDto["password"],
-        user.password,
-      );
+      if (user.isVerified) {
+        const isMatch = await bcrypt.compare(
+          createUserDto["password"],
+          user.password,
+        );
 
-      success = isMatch;
+        success = isMatch;
 
-      token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
-    } else {
-      success = false;
+        token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+      }
     }
 
-    return { success: success, token: token };
+    return { success: success, token: token, isVerified: user.isVerified };
   }
 
   updateUserInfo(body) {
@@ -134,6 +134,68 @@ export class UsersService {
       to: email,
       html: html || null,
     });
+  }
+
+  async sendEmailVerification(email: any) {
+    const user = await this.userModel.findOne({ email: email }).exec();
+    let success = false;
+
+    if (user) {
+      const newCode = uuidv4();
+      const newResetTimer = Date.now() + 298999 * 12 * 24; //24 hours in milliseconds;
+
+      await this.enableReset(user._id, newResetTimer, newCode);
+
+      this.sendMail(
+        email,
+        ``,
+        "Kyoka: Verificação de conta",
+        `<html>
+          <body>
+            Por favor, clique no link abaixo para verificar sua conta. Para sua segurança, o link abaixo expirará nas próximas 24 horas.
+            <br>
+            Caso você não tenha feito esta solicitação, por favor, 
+            ignore esta mensagem.
+            <br>
+            <br>
+            <a href=${process.env.PUBLIC_API_ENDPOINT}/users/email-verification/${newCode}>Clique aqui</a>
+          </body>
+        </html>`,
+      );
+
+      success = true;
+    }
+
+    console.log("Email sent");
+
+    return { success: success };
+  }
+
+  async verifyAccount(resetCode: string) {
+    const user = await this.userModel.findOne({ resetCode: resetCode }).exec();
+
+    if (Date.now() < user.resetTimer) {
+      console.log("Verification successful");
+
+      this.sendMail(
+        user.email,
+        ``,
+        "Kyoka: Verificação de conta",
+        `<html>
+        <body>
+          Sua conta foi verificada com sucesso! Obrigado pelo seu cadastro.
+        </body>
+      </html>`,
+      );
+
+      return this.update(user._id, {
+        resetTimer: Date.now(),
+        resetCode: uuidv4(),
+        isVerified: true,
+      });
+    } else {
+      console.log("Expired");
+    }
   }
 
   async forgot(email: any) {

@@ -26,10 +26,26 @@ export class UsersController {
     return this.usersService.forgot(email);
   }
 
+  @Post("email-verification")
+  sendEmailVerification(@Body() { email }: any) {
+    return this.usersService.sendEmailVerification(email);
+  }
+
   //@Redirect(process.env.APP_HOST)
   @Get(":resetCode")
   resetPassword(@Param("resetCode") resetCode: string, @Res() res) {
+    console.log("password reset");
+
     this.usersService.resetPassword(resetCode);
+
+    res.redirect(process.env.APP_HOST);
+  }
+
+  @Get("email-verification/:resetCode")
+  verifyAccount(@Param("resetCode") resetCode: string, @Res() res) {
+    console.log("email verification");
+
+    this.usersService.verifyAccount(resetCode);
 
     res.redirect(process.env.APP_HOST);
   }
