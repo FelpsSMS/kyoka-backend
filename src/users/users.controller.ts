@@ -49,6 +49,11 @@ export class UsersController {
     return this.usersService.findUserById(body.id);
   }
 
+  @Post("update-user-info")
+  updateUserInfo(@Body() body: any) {
+    return this.usersService.updateUserInfo(body);
+  }
+
   @Patch(":id")
   update(@Param("id") id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(id, updateUserDto);

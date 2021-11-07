@@ -96,6 +96,14 @@ export class UsersService {
     return { success: success, token: token };
   }
 
+  updateUserInfo(body) {
+    return this.update(body.userId, {
+      removeLeeches: body.removeLeeches,
+      numberOfNewCards: body.numberOfNewCards,
+      lapseThreshold: body.lapseThreshold,
+    });
+  }
+
   async mailConfig() {
     const transporter = nodemailer.createTransport({
       host: process.env.EMAIL_HOST,
