@@ -33,6 +33,11 @@ export class CardsController {
     return this.cardsService.create(createCardDto, files);
   }
 
+  @Post("authenticate-deletion-and-delete")
+  authenticateDeletion(@Body() body: any) {
+    return this.cardsService.authenticateDeletion(body);
+  }
+
   @Get()
   findAll() {
     return this.cardsService.findAll();

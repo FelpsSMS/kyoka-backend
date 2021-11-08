@@ -15,6 +15,19 @@ export class DecksService {
     return deck.save();
   }
 
+  async authenticateDeletion(body: any) {
+    const deck: any = await this.deckModel.findById(body.id).exec();
+
+    if (deck.creator == body.creator) {
+      return this.remove(body.id);
+    } else {
+      const message = "Deletion failed: User not authorized";
+
+      console.log(message);
+      return message;
+    }
+  }
+
   findAll() {
     return this.deckModel.find();
   }

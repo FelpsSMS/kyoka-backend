@@ -30,9 +30,9 @@ export class CardStatsController {
     return this.cardStatsService.calculateSRSStats(body);
   }
 
-  @Post("delete-by-card-id")
+  @Post("delete-by-card-and-user-id")
   deleteStatsByCard(@Body() body: any) {
-    return this.cardStatsService.deleteStatsByCard(body);
+    return this.cardStatsService.deleteStatsByCardAndUser(body);
   }
 
   @Get()

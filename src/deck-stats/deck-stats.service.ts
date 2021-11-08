@@ -21,16 +21,54 @@ export class DeckStatsService {
     return this.deckStatModel.find({ user: body.userId });
   }
 
-  getSRSStats(body: any) {
-    return this.deckStatModel.find({ deck: body.deckId });
-  }
-
-  async deleteStatsByDeck(body: any) {
-    const stats: any = await this.deckStatModel
+  async getSRSStats(body: any) {
+    const statsByDeckId: any = await this.deckStatModel
       .find({ deck: body.deckId })
       .exec();
 
-    if (!stats[0].readOnly) return this.remove(stats[0]._id);
+    const statsByDeckIdAndUserId: any = statsByDeckId.filter(
+      (item) => item.user == body.userId,
+    );
+
+    return statsByDeckIdAndUserId[0];
+  }
+
+  async authenticateDeletion(body: any) {
+    const statsByDeckId: any = await this.deckStatModel
+      .find({ deck: body.deckId })
+      .exec();
+
+    const statsByDeckIdAndUserId: any = statsByDeckId.filter(
+      (item) => item.user == body.userId,
+    );
+
+    let deleteAuth = false;
+
+    if (!statsByDeckIdAndUserId[0].readOnly) {
+      deleteAuth = true;
+    }
+
+    return deleteAuth;
+  }
+
+  async deleteStatsByDeckAndUser(body: any) {
+    const statsByDeckId: any = await this.deckStatModel
+      .find({ deck: body.deckId })
+      .exec();
+
+    const statsByDeckIdAndUserId: any = statsByDeckId.filter(
+      (item) => item.user == body.userId,
+    );
+
+    let deleteAuth = false;
+
+    await this.remove(statsByDeckIdAndUserId[0]._id);
+
+    if (!statsByDeckIdAndUserId[0].readOnly) {
+      deleteAuth = true;
+    }
+
+    return deleteAuth;
   }
 
   findAll() {
@@ -42,16 +80,17 @@ export class DeckStatsService {
   }
 
   async updateActive(body: any) {
-    const stats: any = await this.deckStatModel
+    const statsByDeckId: any = await this.deckStatModel
       .find({ deck: body.deckId })
       .exec();
 
-    console.log(stats[0]);
-    console.log(body.updateBody);
+    const statsByDeckIdAndUserId: any = statsByDeckId.filter(
+      (item) => item.user == body.userId,
+    );
 
     return this.deckStatModel.findByIdAndUpdate(
       {
-        _id: stats[0]._id,
+        _id: statsByDeckIdAndUserId[0]._id,
       },
       {
         $set: body.updateBody,
@@ -62,8 +101,12 @@ export class DeckStatsService {
     );
   }
 
-  async update(id: string, updateDeckStatDto: UpdateDeckStatDto) {
-    const stats: any = await this.deckStatModel.find({ deck: id }).exec();
+  /*   async update(id: string, updateDeckStatDto: UpdateDeckStatDto) {
+    const statsByDeckId: any = await this.deckStatModel
+      .find({ deck: id })
+      .exec();
+
+    const statsByDeckIdAndUserId: any = statsByDeckId.filter((item) => item.user == )
 
     return this.deckStatModel.findByIdAndUpdate(
       {
@@ -76,7 +119,7 @@ export class DeckStatsService {
         new: true,
       },
     );
-  }
+  } */
 
   remove(id: string) {
     return this.deckStatModel

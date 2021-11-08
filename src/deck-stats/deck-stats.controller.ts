@@ -30,9 +30,14 @@ export class DeckStatsController {
     return this.deckStatsService.getSRSStats(body);
   }
 
-  @Post("delete-by-deck-id")
+  @Post("delete-by-deck-and-user-id")
   deleteStatsByDeck(@Body() body: any) {
-    return this.deckStatsService.deleteStatsByDeck(body);
+    return this.deckStatsService.deleteStatsByDeckAndUser(body);
+  }
+
+  @Post("authenticate-deletion")
+  authenticateDeletion(@Body() body: any) {
+    return this.deckStatsService.authenticateDeletion(body);
   }
 
   @Post("update")

@@ -20,6 +20,11 @@ export class DecksController {
     return this.decksService.create(createDeckDto);
   }
 
+  @Post("authenticate-deletion-and-delete")
+  authenticateDeletion(@Body() body: any) {
+    return this.decksService.authenticateDeletion(body);
+  }
+
   @Get()
   findAll() {
     return this.decksService.findAll();
@@ -35,8 +40,8 @@ export class DecksController {
     return this.decksService.update(id, updateDeckDto);
   }
 
-  @Delete(":id")
+  /*   @Delete(":id")
   remove(@Param("id") id: string) {
     return this.decksService.remove(id);
-  }
+  } */
 }

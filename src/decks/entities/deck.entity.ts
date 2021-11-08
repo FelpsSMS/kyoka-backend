@@ -7,6 +7,9 @@ export type DeckDocument = Deck & Document;
 export class Deck {
   @Prop({ required: true })
   name: string;
+
+  @Prop({ required: true })
+  creator: string;
 }
 
 export const DeckSchema = SchemaFactory.createForClass(Deck);

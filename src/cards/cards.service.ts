@@ -90,6 +90,19 @@ export class CardsService {
     return card;
   }
 
+  async authenticateDeletion(body: any) {
+    const card: any = await this.cardModel.findById(body.id).exec();
+
+    if (card.creator == body.creator) {
+      return this.remove(body.id);
+    } else {
+      const message = "Deletion failed: User not authorized";
+
+      console.log(message);
+      return message;
+    }
+  }
+
   getCardsByDeckId(deckId: string) {
     return this.cardModel.find({ deck: deckId });
   }

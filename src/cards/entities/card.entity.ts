@@ -5,6 +5,9 @@ export type CardDocument = Card & Document;
 
 @Schema()
 export class Card {
+  @Prop({ required: true })
+  creator: string;
+
   @Prop()
   sentence: string;
 

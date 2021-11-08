@@ -18,16 +18,37 @@ export class CardStatsService {
     return cardStat.save();
   }
 
-  getStatsByCard(body: any) {
-    return this.cardStatModel.find({ card: body.cardId });
-  }
-
-  async deleteStatsByCard(body: any) {
-    const stats: any = await this.cardStatModel
+  async getStatsByCard(body: any) {
+    const statsByCardId: any = await this.cardStatModel
       .find({ card: body.cardId })
       .exec();
 
-    return this.remove(stats[0]._id);
+    const statsByCardIdAndUserId: any = statsByCardId.filter(
+      (item) => item.user == body.userId,
+    );
+
+    return statsByCardIdAndUserId[0];
+  }
+
+  async deleteStatsByCardAndUser(body: any) {
+    console.log(body);
+
+    const statsByCardId: any = await this.cardStatModel
+      .find({ card: body.cardId })
+      .exec();
+
+    const statsByCardIdAndUserId: any = statsByCardId.filter(
+      (item) => item.user == body.userId,
+    );
+
+    let deleteAuth = false;
+
+    if (!body.readOnly) {
+      deleteAuth = true;
+      await this.remove(statsByCardIdAndUserId[0]._id);
+    }
+
+    return deleteAuth;
   }
 
   calculateSRSStats(body: any) {
