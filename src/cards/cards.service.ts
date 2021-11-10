@@ -98,7 +98,6 @@ export class CardsService {
     } else {
       const message = "Deletion failed: User not authorized";
 
-      console.log(message);
       return message;
     }
   }

@@ -22,19 +22,23 @@ export class SessionService {
       .find({ user: body.userId })
       .exec();
 
-    console.log(userSessions);
-
     if (userSessions.length > 0) {
-      if (userSessions[0].endTime) {
-        const lastSession = userSessions.reduce((a, b): any => {
-          return Math.max(a.endTime, b.endTime);
-        });
+      const lastSession = userSessions.reduce((a, b): any => {
+        return Math.max(a.endTime, b.endTime);
+      });
 
-        return lastSession;
-      }
+      return lastSession;
     }
 
     return false;
+  }
+
+  async getSessionsByUser(body: any) {
+    const userSessions = await this.sessionModel
+      .find({ user: body.userId })
+      .exec();
+
+    return userSessions;
   }
 
   getDecksByUser(body: any) {

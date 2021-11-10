@@ -31,8 +31,6 @@ export class CardStatsService {
   }
 
   async deleteStatsByCardAndUser(body: any) {
-    console.log(body);
-
     const statsByCardId: any = await this.cardStatModel
       .find({ card: body.cardId })
       .exec();
