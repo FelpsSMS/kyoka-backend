@@ -79,21 +79,22 @@ export class UsersService {
 
     let success = false;
     let token = null;
+    let isVerified = false;
 
     if (user) {
-      if (user.isVerified) {
-        const isMatch = await bcrypt.compare(
-          createUserDto["password"],
-          user.password,
-        );
+      const isMatch = await bcrypt.compare(
+        createUserDto["password"],
+        user.password,
+      );
 
-        success = isMatch;
+      success = isMatch;
 
-        token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
-      }
+      token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+
+      isVerified = user.isVerified;
     }
 
-    return { success: success, token: token, isVerified: user.isVerified };
+    return { success: success, token: token, isVerified: isVerified };
   }
 
   updateUserInfo(body) {
