@@ -25,6 +25,11 @@ export class DecksController {
     return this.decksService.authenticateDeletion(body);
   }
 
+  @Post("shared")
+  getSharedDecks() {
+    return this.decksService.getSharedDecks();
+  }
+
   @Get()
   findAll() {
     return this.decksService.findAll();

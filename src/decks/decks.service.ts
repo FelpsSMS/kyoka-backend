@@ -28,6 +28,11 @@ export class DecksService {
     }
   }
 
+  async getSharedDecks() {
+    const sharedDecks = await this.deckModel.find({ shared: true }).exec();
+    return sharedDecks;
+  }
+
   findAll() {
     return this.deckModel.find();
   }
