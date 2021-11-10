@@ -8,6 +8,7 @@ import { ConfigModule } from "@nestjs/config";
 import { UsersModule } from "./users/users.module";
 import { DeckStatsModule } from "./deck-stats/deck-stats.module";
 import { CardStatsModule } from "./card-stats/card-stats.module";
+import { SessionModule } from "./session/session.module";
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { CardStatsModule } from "./card-stats/card-stats.module";
     UsersModule,
     DeckStatsModule,
     CardStatsModule,
+    SessionModule,
   ],
   controllers: [],
   providers: [Cloudinary],
