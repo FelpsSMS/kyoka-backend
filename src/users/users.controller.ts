@@ -70,6 +70,11 @@ export class UsersController {
     return this.usersService.updateUserInfo(body);
   }
 
+  @Post("update-active-dictionary")
+  updateActiveDictionary(@Body() body: any) {
+    return this.usersService.updateActiveDictionary(body);
+  }
+
   @Patch(":id")
   update(@Param("id") id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(id, updateUserDto);

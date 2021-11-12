@@ -20,6 +20,7 @@ export class UsersService {
       numberOfNewCards: user.numberOfNewCards,
       lapseThreshold: user.lapseThreshold,
       removeLeeches: user.removeLeeches,
+      activeDictionary: user.activeDictionary,
     };
   }
 
@@ -102,6 +103,12 @@ export class UsersService {
       removeLeeches: body.removeLeeches,
       numberOfNewCards: body.numberOfNewCards,
       lapseThreshold: body.lapseThreshold,
+    });
+  }
+
+  updateActiveDictionary(body) {
+    return this.update(body.userId, {
+      activeDictionary: body.activeDictionary,
     });
   }
 

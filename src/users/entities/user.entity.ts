@@ -31,7 +31,8 @@ export class User {
   @Prop({ required: true, default: false })
   removeLeeches: boolean;
 
-  //start date can be determined by a cookie
+  @Prop()
+  activeDictionary: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
