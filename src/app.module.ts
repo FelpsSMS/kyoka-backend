@@ -9,7 +9,8 @@ import { UsersModule } from "./users/users.module";
 import { DeckStatsModule } from "./deck-stats/deck-stats.module";
 import { CardStatsModule } from "./card-stats/card-stats.module";
 import { SessionModule } from "./session/session.module";
-import { DictionariesModule } from './dictionaries/dictionaries.module';
+import { DictionariesModule } from "./dictionaries/dictionaries.module";
+import { WordStateModule } from "./wordStates/word-state.module";
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { DictionariesModule } from './dictionaries/dictionaries.module';
     CardStatsModule,
     SessionModule,
     DictionariesModule,
+    WordStateModule,
   ],
   controllers: [],
   providers: [Cloudinary],
