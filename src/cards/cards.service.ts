@@ -103,6 +103,14 @@ export class CardsService {
     card.deck = body.deck;
     card.creator = body.user;
 
+    if (body.images) {
+      const maxImages = 4;
+
+      for (let i = 0; i < maxImages; i++) {
+        card.images[i] = body.images.photos[i].src.landscape;
+      }
+    }
+
     console.log(card);
 
     card.save();
