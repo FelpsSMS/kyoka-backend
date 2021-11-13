@@ -33,6 +33,9 @@ export class User {
 
   @Prop()
   activeDictionary: string;
+
+  @Prop()
+  defaultDeckForGeneratedCards: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

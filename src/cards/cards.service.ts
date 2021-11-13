@@ -90,6 +90,26 @@ export class CardsService {
     return card;
   }
 
+  createWithoutFiles(body: any) {
+    const card = new this.cardModel();
+
+    card.focus = body.focus;
+    card.bilingualDescription = body.bilingualDescription;
+    card.monolingualDescription = body.monolingualDescription;
+    card.sentence = body.sentence;
+    card.translation = body.translation;
+    card.sentenceAudio[0] = body.sentenceAudio;
+    card.focusAudio[0] = body.focusAudio;
+    card.deck = body.deck;
+    card.creator = body.user;
+
+    console.log(card);
+
+    card.save();
+
+    return card;
+  }
+
   async authenticateDeletion(body: any) {
     const card: any = await this.cardModel.findById(body.id).exec();
 

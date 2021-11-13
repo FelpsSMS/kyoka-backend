@@ -21,6 +21,7 @@ export class UsersService {
       lapseThreshold: user.lapseThreshold,
       removeLeeches: user.removeLeeches,
       activeDictionary: user.activeDictionary,
+      defaultDeckForGeneratedCards: user.defaultDeckForGeneratedCards,
     };
   }
 
@@ -103,6 +104,7 @@ export class UsersService {
       removeLeeches: body.removeLeeches,
       numberOfNewCards: body.numberOfNewCards,
       lapseThreshold: body.lapseThreshold,
+      defaultDeckForGeneratedCards: body.defaultDeckForGeneratedCards,
     });
   }
 

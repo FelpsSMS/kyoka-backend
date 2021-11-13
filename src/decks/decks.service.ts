@@ -28,6 +28,11 @@ export class DecksService {
     }
   }
 
+  async getDecksByCreator(body: any) {
+    const decks = await this.deckModel.find({ creator: body.userId }).exec();
+
+    return decks;
+  }
   async getSharedDecks() {
     const sharedDecks = await this.deckModel.find({ shared: true }).exec();
     return sharedDecks;

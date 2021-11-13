@@ -33,6 +33,11 @@ export class CardsController {
     return this.cardsService.create(createCardDto, files);
   }
 
+  @Post("create-without-files")
+  createWithoutFiles(@Body() body: any) {
+    return this.cardsService.createWithoutFiles(body);
+  }
+
   @Post("authenticate-deletion-and-delete")
   authenticateDeletion(@Body() body: any) {
     return this.cardsService.authenticateDeletion(body);

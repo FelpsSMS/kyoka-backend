@@ -34,4 +34,10 @@ export class CloudinaryService {
       toStream(file.buffer).pipe(upload);
     });
   }
+
+  async uploadAudioBase64(uri: any) {
+    return v2.uploader.upload(uri, { resource_type: "video" }).catch((err) => {
+      console.log(err);
+    });
+  }
 }
