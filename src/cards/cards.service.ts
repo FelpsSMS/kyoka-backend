@@ -35,7 +35,7 @@ export class CardsService {
     const sentenceAudioFiles = files["sentence_audio"];
     const focusAudioFiles = files["focus_audio"];
 
-    let imageUrls: string[] = [];
+    let imageUrls = [];
     let sentenceAudioUrls: string[] = [];
     let focusAudioUrls: string[] = [];
 
@@ -48,7 +48,7 @@ export class CardsService {
             },
           );
 
-          imageUrls = [...imageUrls, imageUrl];
+          imageUrls = [...imageUrls, { url: imageUrl }];
           card.images = imageUrls;
         }),
       );
@@ -107,7 +107,12 @@ export class CardsService {
       const maxImages = 4;
 
       for (let i = 0; i < maxImages; i++) {
-        card.images[i] = body.images.photos[i].src.landscape;
+        card.images[i] = {
+          url: body.images.photos[i].src.landscape,
+          photographer: body.images.photos[i].photographer,
+          siteUrl: body.images.photos[i].url,
+          photographerUrl: body.images.photos[i].photographer_url,
+        };
       }
     }
 
@@ -148,7 +153,7 @@ export class CardsService {
     const sentenceAudioFiles = files["sentence_audio"];
     const focusAudioFiles = files["focus_audio"];
 
-    let imageUrls: string[] = [];
+    let imageUrls: any = [];
     let sentenceAudioUrls: string[] = [];
     let focusAudioUrls: string[] = [];
 
@@ -161,7 +166,7 @@ export class CardsService {
             },
           );
 
-          imageUrls = [...imageUrls, imageUrl];
+          imageUrls = [...imageUrls, { url: imageUrl }];
           updateCardDto.images = imageUrls;
         }),
       );

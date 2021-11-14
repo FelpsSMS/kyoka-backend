@@ -33,7 +33,7 @@ export class Card {
   notes: string;
 
   @Prop()
-  images: string[];
+  images: any[];
 
   @Prop({ required: true })
   deck: string;

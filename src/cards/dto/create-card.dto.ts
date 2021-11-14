@@ -7,7 +7,7 @@ export class CreateCardDto {
   focusAudio: string[];
   translation: string;
   notes: string;
-  images: string[];
+  images: any[];
   deck: string;
   dateAdded: Date;
   dateDue: Date;
