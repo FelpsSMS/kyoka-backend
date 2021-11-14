@@ -5,6 +5,8 @@ import { createClient } from "pexels";
 import { Model } from "mongoose";
 import { CloudinaryService } from "src/cloudinary/cloudinary.service";
 
+import { JSDOM } from "jsdom";
+
 import axios from "axios";
 
 @Injectable()
@@ -37,14 +39,9 @@ export class AutomaticCardCreationService {
   }
 
   async generateCard(body: any) {
-    console.log(body);
-
     const response = await axios
       .get(`https://api.dictionaryapi.dev/api/v2/entries/en/${body.focus}`) //dictionary api
       .then(async (res) => {
-        console.log("entrou");
-        console.log(res.data);
-
         if (res.data) {
           const audio = res.data[0].phonetics[0].audio;
           const word = res.data[0].word;
@@ -52,31 +49,50 @@ export class AutomaticCardCreationService {
           const example = res.data[0].meanings[0].definitions[0].example;
 
           let sentence = "";
+          let translation = "";
 
           if (body.sentence.length > 0) {
             sentence = body.sentence;
           } else {
-            sentence = example;
+            const tatoebaResults = await axios
+              .get(
+                `https://dev.tatoeba.org/ja/api_v0/search?from=eng&query=${word}&to=por`,
+              )
+              .then((res) => {
+                return {
+                  translatedSentence:
+                    res.data.results[0].translations[0][0].text,
+                  sentence: res.data.results[0].text,
+                };
+              });
+
+            if (tatoebaResults.sentence.length > 0) {
+              sentence = tatoebaResults.sentence;
+
+              translation = tatoebaResults.translatedSentence;
+            } else {
+              sentence = example;
+            }
           }
 
-          let translation = "";
           let t2sAudio = "";
+          let formattedSentence = "";
 
-          if (sentence) {
-            const machineTranslationResult = await axios.post(
-              "https://translate.argosopentech.com/translate", //machine translation api
-              {
-                q: sentence,
-                source: "en",
-                target: "pt",
-              },
-            );
+          if (sentence.length > 0) {
+            if (translation.length == 0) {
+              const machineTranslationResult = await axios.post(
+                "https://translate.argosopentech.com/translate", //machine translation api
+                {
+                  q: sentence,
+                  source: "en",
+                  target: "pt",
+                },
+              );
 
-            translation = machineTranslationResult.data.translatedText;
+              translation = machineTranslationResult.data.translatedText;
+            }
 
-            const formattedSentence = encodeURIComponent(
-              sentence.replace("'", ""),
-            );
+            formattedSentence = encodeURIComponent(sentence.replace("'", ""));
 
             t2sAudio = await axios
               .get(
