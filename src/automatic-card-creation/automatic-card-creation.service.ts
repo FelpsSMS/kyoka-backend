@@ -58,15 +58,26 @@ export class AutomaticCardCreationService {
               .then((res) => {
                 let translation = "";
 
-                for (
-                  let i = 0;
-                  i < res.data.results[0].translations[0].length;
-                  i++
-                ) {
-                  if (res.data.results[0].translations[0][i]) {
-                    translation = res.data.results[0].translations[0][i];
-                    break;
+                console.log("Before for 1");
+                console.log(res.data.results[0]);
+                console.log("Before for 2");
+
+                res.data.results[0].translations;
+                console.log("Before for 3");
+
+                const translationResults = res.data.results[0].translations;
+
+                if (translationResults.length > 0)
+                  for (let i = 0; i < translationResults[0].length; i++) {
+                    if (translationResults[0][i]) {
+                      console.log(translationResults[0][i]);
+
+                      translation = translationResults[0][i].text;
+                      break;
+                    }
                   }
+                else {
+                  translation = translationResults.text;
                 }
 
                 const sentence = res.data.results[0]
