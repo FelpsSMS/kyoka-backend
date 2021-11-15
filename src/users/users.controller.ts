@@ -46,6 +46,8 @@ export class UsersController {
     console.log("email verification");
 
     this.usersService.verifyAccount(resetCode);
+
+    res.status(301).redirect(process.env.APP_HOST);
   }
 
   @Post()
