@@ -38,7 +38,7 @@ export class UsersController {
 
     this.usersService.resetPassword(resetCode);
 
-    res.redirect(process.env.APP_HOST);
+    res.status(301).redirect(process.env.APP_HOST);
   }
 
   @Get("email-verification/:resetCode")
@@ -46,8 +46,6 @@ export class UsersController {
     console.log("email verification");
 
     this.usersService.verifyAccount(resetCode);
-
-    res.redirect(process.env.APP_HOST);
   }
 
   @Post()
