@@ -56,10 +56,26 @@ export class AutomaticCardCreationService {
                 `https://dev.tatoeba.org/ja/api_v0/search?from=eng&query=${word}&to=por`,
               )
               .then((res) => {
+                let translation = "";
+
+                for (
+                  let i = 0;
+                  i < res.data.results[0].translations[0].length;
+                  i++
+                ) {
+                  if (res.data.results[0].translations[0][i]) {
+                    translation = res.data.results[0].translations[0][i];
+                    break;
+                  }
+                }
+
+                const sentence = res.data.results[0]
+                  ? res.data.results[0].text
+                  : "";
+
                 return {
-                  translatedSentence:
-                    res.data.results[0].translations[0][0].text,
-                  sentence: res.data.results[0].text,
+                  translatedSentence: translation,
+                  sentence: sentence,
                 };
               });
 

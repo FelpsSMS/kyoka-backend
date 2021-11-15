@@ -171,12 +171,16 @@ export class UsersService {
             <a href=${process.env.PUBLIC_API_ENDPOINT}/users/email-verification/${newCode}>Clique aqui</a>
           </body>
         </html>`,
-      );
+      )
+        .then(() => {
+          console.log("Email sent");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
 
       success = true;
     }
-
-    console.log("Email sent");
 
     return { success: success };
   }

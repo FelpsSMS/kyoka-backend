@@ -13,6 +13,9 @@ export class Deck {
 
   @Prop({ required: true, default: false })
   shared: boolean;
+
+  @Prop({ required: true })
+  subject: string;
 }
 
 export const DeckSchema = SchemaFactory.createForClass(Deck);
