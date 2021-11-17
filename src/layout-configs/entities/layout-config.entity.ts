@@ -19,6 +19,9 @@ export class LayoutConfig {
 
   @Prop({ required: true, default: false })
   required: boolean;
+
+  @Prop({ required: true, default: false })
+  front: boolean;
 }
 
 export const LayoutConfigSchema = SchemaFactory.createForClass(LayoutConfig);
