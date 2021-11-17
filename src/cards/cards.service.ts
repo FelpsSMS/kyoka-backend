@@ -25,73 +25,86 @@ export class CardsService {
     });
   }
 
-  async create(
-    createCardDto: CreateCardDto,
-    files: Array<Express.Multer.File>,
-  ) {
-    const card = new this.cardModel(createCardDto);
+  async create(body: any, files: Array<Express.Multer.File>) {
+    const card = new this.cardModel(body);
+    const cardStructure = {};
 
-    const imageFiles = files["images"];
-    const sentenceAudioFiles = files["sentence_audio"];
-    const focusAudioFiles = files["focus_audio"];
+    Object.entries(body).map((item) => {
+      cardStructure[item[0]] = item[1];
+    });
 
-    let imageUrls = [];
-    let sentenceAudioUrls: string[] = [];
-    let focusAudioUrls: string[] = [];
+    let uploadedImages = [];
+    let uploadedAudios = [];
 
-    if (imageFiles) {
-      await Promise.all(
-        imageFiles.map(async (image) => {
+    if (files["audios"]) {
+      uploadedAudios = await Promise.all(
+        files["audios"].map(async (audio) => {
+          const audioUrl = await this.uploadAudioToCloudinary(audio).then(
+            (res) => {
+              return res.url;
+            },
+          );
+
+          return { url: audioUrl, originalname: audio.originalname };
+        }),
+      );
+
+      uploadedAudios.map((audio: any) => {
+        const lastChar = audio.originalname.slice(-1);
+        const isNotNumber = isNaN(parseInt(lastChar));
+
+        if (isNotNumber) {
+          cardStructure[audio.originalname] = audio.url;
+        } else {
+          if (!cardStructure[audio.originalname.slice(0, -1)]) {
+            cardStructure[audio.originalname.slice(0, -1)] = [];
+          }
+
+          cardStructure[audio.originalname.slice(0, -1)].push(audio.url);
+        }
+      });
+    }
+
+    if (files["images"]) {
+      uploadedImages = await Promise.all(
+        files["images"].map(async (image) => {
           const imageUrl = await this.uploadImageToCloudinary(image).then(
             (res) => {
               return res.url;
             },
           );
 
-          imageUrls = [...imageUrls, { url: imageUrl }];
-          card.images = imageUrls;
+          return { url: imageUrl, originalname: image.originalname };
         }),
       );
+
+      uploadedImages.map((image: any) => {
+        const lastChar = image.originalname.slice(-1);
+        const isNotNumber = isNaN(parseInt(lastChar));
+
+        if (isNotNumber) {
+          cardStructure[image.originalname] = image.url;
+        } else {
+          if (!cardStructure[image.originalname.slice(0, -1)]) {
+            cardStructure[image.originalname.slice(0, -1)] = [];
+          }
+
+          cardStructure[image.originalname.slice(0, -1)].push(image.url);
+        }
+      });
     }
 
-    if (sentenceAudioFiles) {
-      await Promise.all(
-        sentenceAudioFiles.map(async (audio) => {
-          const sentenceAudioUrl = await this.uploadAudioToCloudinary(
-            audio,
-          ).then((res) => {
-            return res.url;
-          });
+    console.log(cardStructure);
 
-          sentenceAudioUrls = [...sentenceAudioUrls, sentenceAudioUrl];
+    card.layoutInfo.push(cardStructure);
 
-          card.sentenceAudio = sentenceAudioUrls;
-        }),
-      );
-    }
-
-    if (focusAudioFiles) {
-      await Promise.all(
-        focusAudioFiles.map(async (audio) => {
-          const focusAudioUrl = await this.uploadAudioToCloudinary(audio).then(
-            (res) => {
-              return res.url;
-            },
-          );
-
-          focusAudioUrls = [...focusAudioUrls, focusAudioUrl];
-
-          card.focusAudio = focusAudioUrls;
-        }),
-      );
-    }
     card.save();
 
     return card;
   }
 
   createWithoutFiles(body: any) {
-    const card = new this.cardModel();
+    /* const card = new this.cardModel();
 
     card.focus = body.focus;
     card.bilingualDescription = body.bilingualDescription;
@@ -120,7 +133,7 @@ export class CardsService {
 
     card.save();
 
-    return card;
+    return card; */
   }
 
   async authenticateDeletion(body: any) {
@@ -153,7 +166,7 @@ export class CardsService {
     const sentenceAudioFiles = files["sentence_audio"];
     const focusAudioFiles = files["focus_audio"];
 
-    let imageUrls: any = [];
+    let uploadedImages: any = [];
     let sentenceAudioUrls: string[] = [];
     let focusAudioUrls: string[] = [];
 
@@ -166,16 +179,16 @@ export class CardsService {
             },
           );
 
-          imageUrls = [...imageUrls, { url: imageUrl }];
-          updateCardDto.images = imageUrls;
+          uploadedImages = [...uploadedImages, { url: imageUrl }];
+          updateCardDto.images = uploadedImages;
         }),
       );
     }
 
     if (imageStrings) {
       imageStrings.map((imageUrl) => {
-        imageUrls = [...imageUrls, imageUrl];
-        updateCardDto.images = imageUrls;
+        uploadedImages = [...uploadedImages, imageUrl];
+        updateCardDto.images = uploadedImages;
       });
     }
 

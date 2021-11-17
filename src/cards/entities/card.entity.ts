@@ -8,38 +8,14 @@ export class Card {
   @Prop({ required: true })
   creator: string;
 
-  @Prop()
-  sentence: string;
-
-  @Prop({ required: true })
-  focus: string;
-
-  @Prop()
-  bilingualDescription: string;
-
-  @Prop()
-  monolingualDescription: string;
-
-  @Prop()
-  sentenceAudio: string[];
-
-  @Prop()
-  focusAudio: string[];
-
-  @Prop()
-  translation: string;
-
-  @Prop()
-  notes: string;
-
-  @Prop()
-  images: any[];
-
   @Prop({ required: true })
   deck: string;
 
   @Prop({ default: Date.now })
   dateAdded: Date;
+
+  @Prop()
+  layoutInfo: any[];
 }
 
 export const CardSchema = SchemaFactory.createForClass(Card);
