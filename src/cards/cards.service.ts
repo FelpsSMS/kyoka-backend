@@ -89,7 +89,9 @@ export class CardsService {
             cardStructure[image.originalname.slice(0, -1)] = [];
           }
 
-          cardStructure[image.originalname.slice(0, -1)].push(image.url);
+          cardStructure[image.originalname.slice(0, -1)].push({
+            url: image.url,
+          });
         }
       });
     }
@@ -160,76 +162,100 @@ export class CardsService {
     return this.cardModel.findById(id);
   }
 
-  async update(id: string, updateCardDto: UpdateCardDto, files) {
-    const imageStrings = updateCardDto.imageStrings;
-    const imageFiles = files["images"];
-    const sentenceAudioFiles = files["sentence_audio"];
-    const focusAudioFiles = files["focus_audio"];
+  async update(id: string, body: any, files) {
+    const cardStructure = {};
 
-    let uploadedImages: any = [];
-    let sentenceAudioUrls: string[] = [];
-    let focusAudioUrls: string[] = [];
+    Object.entries(body).map((item) => {
+      const lastChar = item[0].slice(-1);
+      const isNotNumber = isNaN(parseInt(lastChar));
 
-    if (imageFiles) {
-      await Promise.all(
-        imageFiles.map(async (image) => {
+      if (isNotNumber) {
+        cardStructure[item[0]] = item[1];
+      } else {
+        if (!cardStructure[item[0].slice(0, -1)]) {
+          cardStructure[item[0].slice(0, -1)] = [];
+        }
+
+        cardStructure[item[0].slice(0, -1)].push({ url: item[1] });
+      }
+    });
+
+    let uploadedImages = [];
+    let uploadedAudios = [];
+
+    if (files["audios"]) {
+      uploadedAudios = await Promise.all(
+        files["audios"].map(async (audio) => {
+          const audioUrl = await this.uploadAudioToCloudinary(audio).then(
+            (res) => {
+              return res.url;
+            },
+          );
+
+          return { url: audioUrl, originalname: audio.originalname };
+        }),
+      );
+
+      uploadedAudios.map((audio: any) => {
+        const lastChar = audio.originalname.slice(-1);
+        const isNotNumber = isNaN(parseInt(lastChar));
+
+        if (isNotNumber) {
+          cardStructure[audio.originalname] = audio.url;
+        } else {
+          if (!cardStructure[audio.originalname.slice(0, -1)]) {
+            cardStructure[audio.originalname.slice(0, -1)] = [];
+          }
+
+          cardStructure[audio.originalname.slice(0, -1)].push(audio.url);
+        }
+      });
+    }
+
+    if (files["images"]) {
+      uploadedImages = await Promise.all(
+        files["images"].map(async (image) => {
           const imageUrl = await this.uploadImageToCloudinary(image).then(
             (res) => {
               return res.url;
             },
           );
 
-          uploadedImages = [...uploadedImages, { url: imageUrl }];
-          updateCardDto.images = uploadedImages;
+          return { url: imageUrl, originalname: image.originalname };
         }),
       );
-    }
 
-    if (imageStrings) {
-      imageStrings.map((imageUrl) => {
-        uploadedImages = [...uploadedImages, imageUrl];
-        updateCardDto.images = uploadedImages;
+      uploadedImages.map((image: any) => {
+        const lastChar = image.originalname.slice(-1);
+        const isNotNumber = isNaN(parseInt(lastChar));
+
+        if (isNotNumber) {
+          cardStructure[image.originalname] = image.url;
+        } else {
+          if (!cardStructure[image.originalname.slice(0, -1)]) {
+            cardStructure[image.originalname.slice(0, -1)] = [];
+          }
+
+          cardStructure[image.originalname.slice(0, -1)].push({
+            url: image.url,
+          });
+        }
       });
     }
 
-    if (sentenceAudioFiles) {
-      await Promise.all(
-        sentenceAudioFiles.map(async (audio) => {
-          const sentenceAudioUrl = await this.uploadAudioToCloudinary(
-            audio,
-          ).then((res) => {
-            return res.url;
-          });
+    const info = [];
 
-          sentenceAudioUrls = [...sentenceAudioUrls, sentenceAudioUrl];
+    info.push(cardStructure);
+    const updateBody = { layoutInfo: info };
 
-          updateCardDto.sentenceAudio = sentenceAudioUrls;
-        }),
-      );
-    }
-
-    if (focusAudioFiles) {
-      await Promise.all(
-        focusAudioFiles.map(async (audio) => {
-          const focusAudioUrl = await this.uploadAudioToCloudinary(audio).then(
-            (res) => {
-              return res.url;
-            },
-          );
-
-          focusAudioUrls = [...focusAudioUrls, focusAudioUrl];
-
-          updateCardDto.focusAudio = focusAudioUrls;
-        }),
-      );
-    }
+    console.log(updateBody);
 
     return this.cardModel.findByIdAndUpdate(
       {
         _id: id,
       },
       {
-        $set: updateCardDto,
+        $set: updateBody,
       },
       {
         new: true,
