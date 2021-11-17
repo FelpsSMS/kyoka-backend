@@ -106,36 +106,40 @@ export class CardsService {
   }
 
   createWithoutFiles(body: any) {
-    /* const card = new this.cardModel();
+    const card = new this.cardModel(body);
 
-    card.focus = body.focus;
-    card.bilingualDescription = body.bilingualDescription;
-    card.monolingualDescription = body.monolingualDescription;
-    card.sentence = body.sentence;
-    card.translation = body.translation;
-    card.sentenceAudio[0] = body.sentenceAudio;
-    card.focusAudio[0] = body.focusAudio;
-    card.deck = body.deck;
     card.creator = body.user;
+    card.deck = body.deck;
+    const images = [];
+    const layoutInfo = {};
 
-    if (body.images) {
-      const maxImages = 4;
+    console.log(body.images);
 
-      for (let i = 0; i < maxImages; i++) {
-        card.images[i] = {
-          url: body.images.photos[i].src.landscape,
-          photographer: body.images.photos[i].photographer,
-          siteUrl: body.images.photos[i].url,
-          photographerUrl: body.images.photos[i].photographer_url,
-        };
-      }
+    for (let i = 0; i < body.images.photos.length; i++) {
+      images.push({
+        url: body.images.photos[i].src.landscape,
+        photographer: body.images.photos[i].photographer,
+        siteUrl: body.images.photos[i].url,
+        photographerUrl: body.images.photos[i].photographer_url,
+      });
     }
 
-    console.log(card);
+    console.log(images);
+
+    layoutInfo["images"] = images;
+    layoutInfo["focus"] = body.focus;
+    layoutInfo["bilingualDescription"] = body.bilingualDescription;
+    layoutInfo["monolingualDescription"] = body.monolingualDescription;
+    layoutInfo["sentence"] = body.sentence;
+    layoutInfo["translation"] = body.translation;
+    layoutInfo["sentenceAudio"] = body.sentenceAudio;
+    layoutInfo["focusAudio"] = body.focusAudio;
+
+    card.layoutInfo.push(layoutInfo);
 
     card.save();
 
-    return card; */
+    return card;
   }
 
   async authenticateDeletion(body: any) {
