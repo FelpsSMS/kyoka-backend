@@ -16,6 +16,9 @@ export class Deck {
 
   @Prop({ required: true })
   subject: string;
+
+  @Prop({ required: true })
+  layout: string;
 }
 
 export const DeckSchema = SchemaFactory.createForClass(Deck);

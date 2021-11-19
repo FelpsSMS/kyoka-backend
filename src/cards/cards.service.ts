@@ -25,98 +25,117 @@ export class CardsService {
     });
   }
 
-  async create(
-    createCardDto: CreateCardDto,
-    files: Array<Express.Multer.File>,
-  ) {
-    const card = new this.cardModel(createCardDto);
+  async create(body: any, files: Array<Express.Multer.File>) {
+    const card = new this.cardModel(body);
+    const cardStructure = {};
 
-    const imageFiles = files["images"];
-    const sentenceAudioFiles = files["sentence_audio"];
-    const focusAudioFiles = files["focus_audio"];
+    Object.entries(body).map((item) => {
+      cardStructure[item[0]] = item[1];
+    });
 
-    let imageUrls = [];
-    let sentenceAudioUrls: string[] = [];
-    let focusAudioUrls: string[] = [];
+    let uploadedImages = [];
+    let uploadedAudios = [];
 
-    if (imageFiles) {
-      await Promise.all(
-        imageFiles.map(async (image) => {
+    if (files["audios"]) {
+      uploadedAudios = await Promise.all(
+        files["audios"].map(async (audio) => {
+          const audioUrl = await this.uploadAudioToCloudinary(audio).then(
+            (res) => {
+              return res.url;
+            },
+          );
+
+          return { url: audioUrl, originalname: audio.originalname };
+        }),
+      );
+
+      uploadedAudios.map((audio: any) => {
+        const lastChar = audio.originalname.slice(-1);
+        const isNotNumber = isNaN(parseInt(lastChar));
+
+        if (isNotNumber) {
+          cardStructure[audio.originalname] = audio.url;
+        } else {
+          if (!cardStructure[audio.originalname.slice(0, -1)]) {
+            cardStructure[audio.originalname.slice(0, -1)] = [];
+          }
+
+          cardStructure[audio.originalname.slice(0, -1)].push(audio.url);
+        }
+      });
+    }
+
+    if (files["images"]) {
+      uploadedImages = await Promise.all(
+        files["images"].map(async (image) => {
           const imageUrl = await this.uploadImageToCloudinary(image).then(
             (res) => {
               return res.url;
             },
           );
 
-          imageUrls = [...imageUrls, { url: imageUrl }];
-          card.images = imageUrls;
+          return { url: imageUrl, originalname: image.originalname };
         }),
       );
-    }
 
-    if (sentenceAudioFiles) {
-      await Promise.all(
-        sentenceAudioFiles.map(async (audio) => {
-          const sentenceAudioUrl = await this.uploadAudioToCloudinary(
-            audio,
-          ).then((res) => {
-            return res.url;
+      uploadedImages.map((image: any) => {
+        const lastChar = image.originalname.slice(-1);
+        const isNotNumber = isNaN(parseInt(lastChar));
+
+        if (isNotNumber) {
+          cardStructure[image.originalname] = image.url;
+        } else {
+          if (!cardStructure[image.originalname.slice(0, -1)]) {
+            cardStructure[image.originalname.slice(0, -1)] = [];
+          }
+
+          cardStructure[image.originalname.slice(0, -1)].push({
+            url: image.url,
           });
-
-          sentenceAudioUrls = [...sentenceAudioUrls, sentenceAudioUrl];
-
-          card.sentenceAudio = sentenceAudioUrls;
-        }),
-      );
+        }
+      });
     }
 
-    if (focusAudioFiles) {
-      await Promise.all(
-        focusAudioFiles.map(async (audio) => {
-          const focusAudioUrl = await this.uploadAudioToCloudinary(audio).then(
-            (res) => {
-              return res.url;
-            },
-          );
+    console.log(cardStructure);
 
-          focusAudioUrls = [...focusAudioUrls, focusAudioUrl];
+    card.layoutInfo.push(cardStructure);
 
-          card.focusAudio = focusAudioUrls;
-        }),
-      );
-    }
     card.save();
 
     return card;
   }
 
   createWithoutFiles(body: any) {
-    const card = new this.cardModel();
+    const card = new this.cardModel(body);
 
-    card.focus = body.focus;
-    card.bilingualDescription = body.bilingualDescription;
-    card.monolingualDescription = body.monolingualDescription;
-    card.sentence = body.sentence;
-    card.translation = body.translation;
-    card.sentenceAudio[0] = body.sentenceAudio;
-    card.focusAudio[0] = body.focusAudio;
-    card.deck = body.deck;
     card.creator = body.user;
+    card.deck = body.deck;
+    const images = [];
+    const layoutInfo = {};
 
-    if (body.images) {
-      const maxImages = 4;
+    console.log(body.images);
 
-      for (let i = 0; i < maxImages; i++) {
-        card.images[i] = {
-          url: body.images.photos[i].src.landscape,
-          photographer: body.images.photos[i].photographer,
-          siteUrl: body.images.photos[i].url,
-          photographerUrl: body.images.photos[i].photographer_url,
-        };
-      }
+    for (let i = 0; i < body.images.photos.length; i++) {
+      images.push({
+        url: body.images.photos[i].src.landscape,
+        photographer: body.images.photos[i].photographer,
+        siteUrl: body.images.photos[i].url,
+        photographerUrl: body.images.photos[i].photographer_url,
+      });
     }
 
-    console.log(card);
+    console.log(images);
+
+    layoutInfo["images"] = images;
+    layoutInfo["focus"] = body.focus;
+    layoutInfo["bilingualDescription"] = body.bilingualDescription;
+    layoutInfo["monolingualDescription"] = body.monolingualDescription;
+    layoutInfo["sentence"] = body.sentence;
+    layoutInfo["translation"] = body.translation;
+    layoutInfo["sentenceAudio"] = body.sentenceAudio;
+    layoutInfo["focusAudio"] = body.focusAudio;
+
+    card.layoutInfo.push(layoutInfo);
 
     card.save();
 
@@ -147,76 +166,100 @@ export class CardsService {
     return this.cardModel.findById(id);
   }
 
-  async update(id: string, updateCardDto: UpdateCardDto, files) {
-    const imageStrings = updateCardDto.imageStrings;
-    const imageFiles = files["images"];
-    const sentenceAudioFiles = files["sentence_audio"];
-    const focusAudioFiles = files["focus_audio"];
+  async update(id: string, body: any, files) {
+    const cardStructure = {};
 
-    let imageUrls: any = [];
-    let sentenceAudioUrls: string[] = [];
-    let focusAudioUrls: string[] = [];
+    Object.entries(body).map((item) => {
+      const lastChar = item[0].slice(-1);
+      const isNotNumber = isNaN(parseInt(lastChar));
 
-    if (imageFiles) {
-      await Promise.all(
-        imageFiles.map(async (image) => {
+      if (isNotNumber) {
+        cardStructure[item[0]] = item[1];
+      } else {
+        if (!cardStructure[item[0].slice(0, -1)]) {
+          cardStructure[item[0].slice(0, -1)] = [];
+        }
+
+        cardStructure[item[0].slice(0, -1)].push({ url: item[1] });
+      }
+    });
+
+    let uploadedImages = [];
+    let uploadedAudios = [];
+
+    if (files["audios"]) {
+      uploadedAudios = await Promise.all(
+        files["audios"].map(async (audio) => {
+          const audioUrl = await this.uploadAudioToCloudinary(audio).then(
+            (res) => {
+              return res.url;
+            },
+          );
+
+          return { url: audioUrl, originalname: audio.originalname };
+        }),
+      );
+
+      uploadedAudios.map((audio: any) => {
+        const lastChar = audio.originalname.slice(-1);
+        const isNotNumber = isNaN(parseInt(lastChar));
+
+        if (isNotNumber) {
+          cardStructure[audio.originalname] = audio.url;
+        } else {
+          if (!cardStructure[audio.originalname.slice(0, -1)]) {
+            cardStructure[audio.originalname.slice(0, -1)] = [];
+          }
+
+          cardStructure[audio.originalname.slice(0, -1)].push(audio.url);
+        }
+      });
+    }
+
+    if (files["images"]) {
+      uploadedImages = await Promise.all(
+        files["images"].map(async (image) => {
           const imageUrl = await this.uploadImageToCloudinary(image).then(
             (res) => {
               return res.url;
             },
           );
 
-          imageUrls = [...imageUrls, { url: imageUrl }];
-          updateCardDto.images = imageUrls;
+          return { url: imageUrl, originalname: image.originalname };
         }),
       );
-    }
 
-    if (imageStrings) {
-      imageStrings.map((imageUrl) => {
-        imageUrls = [...imageUrls, imageUrl];
-        updateCardDto.images = imageUrls;
+      uploadedImages.map((image: any) => {
+        const lastChar = image.originalname.slice(-1);
+        const isNotNumber = isNaN(parseInt(lastChar));
+
+        if (isNotNumber) {
+          cardStructure[image.originalname] = image.url;
+        } else {
+          if (!cardStructure[image.originalname.slice(0, -1)]) {
+            cardStructure[image.originalname.slice(0, -1)] = [];
+          }
+
+          cardStructure[image.originalname.slice(0, -1)].push({
+            url: image.url,
+          });
+        }
       });
     }
 
-    if (sentenceAudioFiles) {
-      await Promise.all(
-        sentenceAudioFiles.map(async (audio) => {
-          const sentenceAudioUrl = await this.uploadAudioToCloudinary(
-            audio,
-          ).then((res) => {
-            return res.url;
-          });
+    const info = [];
 
-          sentenceAudioUrls = [...sentenceAudioUrls, sentenceAudioUrl];
+    info.push(cardStructure);
+    const updateBody = { layoutInfo: info };
 
-          updateCardDto.sentenceAudio = sentenceAudioUrls;
-        }),
-      );
-    }
-
-    if (focusAudioFiles) {
-      await Promise.all(
-        focusAudioFiles.map(async (audio) => {
-          const focusAudioUrl = await this.uploadAudioToCloudinary(audio).then(
-            (res) => {
-              return res.url;
-            },
-          );
-
-          focusAudioUrls = [...focusAudioUrls, focusAudioUrl];
-
-          updateCardDto.focusAudio = focusAudioUrls;
-        }),
-      );
-    }
+    console.log(updateBody);
 
     return this.cardModel.findByIdAndUpdate(
       {
         _id: id,
       },
       {
-        $set: updateCardDto,
+        $set: updateBody,
       },
       {
         new: true,

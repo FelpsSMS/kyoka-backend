@@ -12,6 +12,8 @@ import { SessionModule } from "./session/session.module";
 import { DictionariesModule } from "./dictionaries/dictionaries.module";
 import { WordStateModule } from "./wordStates/word-state.module";
 import { AutomaticCardCreationModule } from "./automatic-card-creation/automatic-card-creation.module";
+import { LayoutsModule } from "./layouts/layouts.module";
+import { LayoutConfigsModule } from "./layout-configs/layout-configs.module";
 
 @Module({
   imports: [
@@ -31,6 +33,8 @@ import { AutomaticCardCreationModule } from "./automatic-card-creation/automatic
     DictionariesModule,
     WordStateModule,
     AutomaticCardCreationModule,
+    LayoutsModule,
+    LayoutConfigsModule,
   ],
   controllers: [],
   providers: [Cloudinary],

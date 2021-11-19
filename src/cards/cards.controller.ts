@@ -20,17 +20,16 @@ export class CardsController {
 
   @Post()
   @UseInterceptors(
-    FileFieldsInterceptor([
-      { name: "images", maxCount: 4 },
-      { name: "sentence_audio", maxCount: 1 },
-      { name: "focus_audio", maxCount: 1 },
-    ]),
+    FileFieldsInterceptor([{ name: "images" }, { name: "audios" }]),
   )
   create(
-    @Body() createCardDto: CreateCardDto,
+    @Body() body: any,
     @UploadedFiles() files: Array<Express.Multer.File>,
   ) {
-    return this.cardsService.create(createCardDto, files);
+    //console.log(files);
+    //console.log(Object.entries(body));
+
+    return this.cardsService.create(body, files);
   }
 
   @Post("create-without-files")
@@ -60,19 +59,15 @@ export class CardsController {
 
   @Patch(":id")
   @UseInterceptors(
-    FileFieldsInterceptor([
-      { name: "images", maxCount: 4 },
-      { name: "sentence_audio", maxCount: 1 },
-      { name: "focus_audio", maxCount: 1 },
-    ]),
+    FileFieldsInterceptor([{ name: "images" }, { name: "audios" }]),
   )
   update(
     @Param("id") id: string,
 
-    @Body() updateCardDto: UpdateCardDto,
+    @Body() body: any,
     @UploadedFiles() files: Array<Express.Multer.File>,
   ) {
-    return this.cardsService.update(id, updateCardDto, files);
+    return this.cardsService.update(id, body, files);
   }
 
   @Delete(":id")
