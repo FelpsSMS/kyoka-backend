@@ -45,6 +45,9 @@ export class AutomaticCardCreationService {
           const definition = res.data[0].meanings[0].definitions[0].definition;
           const example = res.data[0].meanings[0].definitions[0].example;
 
+          const languageData = { ja: "jpn", pt: "por" };
+          const language = body.language;
+
           let sentence = "";
           let translation = "";
 
@@ -53,7 +56,7 @@ export class AutomaticCardCreationService {
           } else {
             const tatoebaResults = await axios
               .get(
-                `https://dev.tatoeba.org/ja/api_v0/search?from=eng&query=${word}&to=por`,
+                `https://dev.tatoeba.org/ja/api_v0/search?from=eng&query=${word}&to=${languageData[language]}`, //por = portuguese, jpn = japanese
               )
               .then((res) => {
                 let translation = "";
@@ -108,8 +111,8 @@ export class AutomaticCardCreationService {
                 "https://translate.argosopentech.com/translate", //machine translation api
                 {
                   q: sentence,
+                  target: language,
                   source: "en",
-                  target: "pt",
                 },
               );
 
@@ -140,6 +143,8 @@ export class AutomaticCardCreationService {
             query: word,
             per_page: 4,
           });
+          console.log("IMAGES");
+          console.log(images);
 
           return {
             audio,
