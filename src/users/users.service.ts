@@ -39,7 +39,7 @@ export class UsersService {
     console.log("Saved");
   }
 
-  async resetPassword(resetCode: string) {
+  async resetPassword(resetCode: string, locale: string) {
     const newPassword = uuidv4();
 
     const saltOrRounds = 10;
@@ -48,21 +48,42 @@ export class UsersService {
 
     const user = await this.userModel.findOne({ resetCode: resetCode }).exec();
 
+    console.log("reset password");
+    console.log(locale);
+
     if (Date.now() < user.resetTimer) {
       console.log("Password changed successfully");
 
-      this.sendMail(
-        user.email,
-        ``,
-        "Kyoka: Redefinição de senha",
-        `<html>
-        <body>
-          Sua senha foi redefinida com sucesso. Sua senha temporária é <strong>${newPassword}</strong>
-          <br>
-          Por favor, entre na sua conta e altere essa senha o mais rápido possível.
-        </body>
-      </html>`,
-      );
+      let emailSubject = "";
+      let emailBody = "";
+
+      switch (locale) {
+        case "pt":
+          emailSubject = "Kyoka: Redefinição de senha";
+          emailBody = `
+          <html>
+            <body>
+              Sua senha foi redefinida com sucesso. Sua senha temporária é <strong>${newPassword}</strong>
+              <br>
+              Por favor, entre na sua conta e altere essa senha o mais rápido possível.
+            </body>
+          </html>`;
+          break;
+
+        case "en":
+          emailSubject = "Kyoka: Password reset";
+          emailBody = `
+          <html>
+            <body>
+              Your password was reset successfully. Your temporary password is <strong>${newPassword}</strong>
+              <br>
+              Please, log in to your account and change this password as fast as possible.
+            </body>
+          </html>`;
+          break;
+      }
+
+      this.sendMail(user.email, ``, emailSubject, emailBody);
 
       return this.update(user._id, {
         password: newPasswordHash,
@@ -149,7 +170,7 @@ export class UsersService {
   async sendMail(email: string, text: string, subject: string, html?: string) {
     const transporter = await this.mailConfig();
 
-    const mailSent = await transporter.sendMail({
+    await transporter.sendMail({
       text: text,
       subject: subject,
       from: "Kyoka <kyokadonotreply@gmail.com>",
@@ -158,9 +179,12 @@ export class UsersService {
     });
   }
 
-  async sendEmailVerification(email: any) {
+  async sendEmailVerification(email: any, locale: any) {
     const user = await this.userModel.findOne({ email: email }).exec();
     let success = false;
+
+    let emailBody = "";
+    let emailSubject = "";
 
     if (user) {
       const newCode = uuidv4();
@@ -168,22 +192,42 @@ export class UsersService {
 
       await this.enableReset(user._id, newResetTimer, newCode);
 
-      this.sendMail(
-        email,
-        ``,
-        "Kyoka: Verificação de conta",
-        `<html>
-          <body>
-            Por favor, clique no link abaixo para verificar sua conta. Para sua segurança, o link abaixo expirará nas próximas 24 horas.
-            <br>
-            Caso você não tenha feito esta solicitação, por favor, 
-            ignore esta mensagem.
-            <br>
-            <br>
-            <a href=${process.env.PUBLIC_API_ENDPOINT}/users/email-verification/${newCode}>Clique aqui</a>
+      switch (locale) {
+        case "pt":
+          emailSubject = "Kyoka: Verificação de conta";
+          emailBody = `
+          <html>
+            <body>
+              Por favor, clique no link abaixo para verificar sua conta. Para sua segurança, o link abaixo expirará nas próximas 24 horas.
+              <br>
+              Caso você não tenha feito esta solicitação, por favor, 
+              ignore esta mensagem.
+              <br>
+              <br>
+              <a href=${process.env.PUBLIC_API_ENDPOINT}/users/email-verification/${newCode}/${locale}>Clique aqui</a>
           </body>
-        </html>`,
-      )
+        </html>`;
+          break;
+
+        case "en":
+          emailSubject = "Kyoka: Account verification";
+          emailBody = `
+          <html>
+            <body>
+              Please, click the link below to verify your account. For your safety, the link below will expire in the next 24 hours.
+              <br>
+              If you haven't made this request, please ignore this message.
+              <br>
+              <br>
+              <a href=${process.env.PUBLIC_API_ENDPOINT}/users/email-verification/${newCode}/${locale}>Click here</a>
+          </body>
+        </html>`;
+          break;
+      }
+
+      console.log(email);
+
+      this.sendMail(email, ``, emailSubject, emailBody)
         .then(() => {
           console.log("Email sent");
         })
@@ -197,22 +241,40 @@ export class UsersService {
     return { success: success };
   }
 
-  async verifyAccount(resetCode: string) {
+  async verifyAccount(resetCode: string, locale: string) {
     const user = await this.userModel.findOne({ resetCode: resetCode }).exec();
+
+    console.log("email verification");
+    console.log(locale);
 
     if (Date.now() < user.resetTimer) {
       console.log("Verification successful");
+      let emailSubject = "";
+      let emailBody = "";
 
-      this.sendMail(
-        user.email,
-        ``,
-        "Kyoka: Verificação de conta",
-        `<html>
-        <body>
-          Sua conta foi verificada com sucesso! Obrigado pelo seu cadastro.
-        </body>
-      </html>`,
-      );
+      switch (locale) {
+        case "pt":
+          emailSubject = "Kyoka: Verificação de conta";
+          emailBody = `
+          <html>
+            <body>
+              Sua conta foi verificada com sucesso! Obrigado pelo seu cadastro.
+            </body>
+        </html>`;
+          break;
+
+        case "en":
+          emailSubject = "Kyoka: Account verification";
+          emailBody = `
+          <html>
+            <body>
+              Your account has been verified successfully! Thank you for registering.
+            </body>
+        </html>`;
+          break;
+      }
+
+      this.sendMail(user.email, ``, emailSubject, emailBody);
 
       return this.update(user._id, {
         resetTimer: Date.now(),
@@ -224,9 +286,12 @@ export class UsersService {
     }
   }
 
-  async forgot(email: any) {
+  async forgot(email: any, locale: any) {
     const user = await this.userModel.findOne({ email: email }).exec();
     let success = false;
+
+    console.log("forgot");
+    console.log(locale);
 
     if (user) {
       const newCode = uuidv4();
@@ -234,23 +299,45 @@ export class UsersService {
 
       await this.enableReset(user._id, newResetTimer, newCode);
 
-      this.sendMail(
-        email,
-        ``,
-        "Kyoka: Redefinição de senha",
-        `<html>
-          <body>
-            Uma solicitação de redefinição de senha foi feita com o seu e-mail, clique no link abaixo 
-            para redefinir sua senha. O link fornecido expirará em 5 minutos.
-            <br>
-            Caso você não tenha feito esta solicitação, por favor, 
-            ignore esta mensagem.
-            <br>
-            <br>
-            <a href=${process.env.PUBLIC_API_ENDPOINT}/users/${newCode}>Clique aqui</a>
-          </body>
-        </html>`,
-      );
+      let emailSubject = "";
+      let emailBody = "";
+
+      switch (locale) {
+        case "pt":
+          emailSubject = "Kyoka: Redefinição de senha";
+          emailBody = `
+          <html>
+            <body>
+              Uma solicitação de redefinição de senha foi feita com o seu e-mail, clique no link abaixo 
+              para redefinir sua senha. O link fornecido expirará em 5 minutos.
+              <br>
+              Caso você não tenha feito esta solicitação, por favor, 
+              ignore esta mensagem.
+              <br>
+              <br>
+              <a href=${process.env.PUBLIC_API_ENDPOINT}/users/${newCode}/${locale}>Clique aqui</a>
+            </body>
+          </html>`;
+          break;
+
+        case "en":
+          emailSubject = "Kyoka: Password reset";
+          emailBody = `
+          <html>
+            <body>
+              A password reset request was made with your email, click the link below to reset your password. 
+              The provided link will expire in 5 minutes.
+              <br>
+              If you haven't made this request, please ignore this message.
+              <br>
+              <br>
+              <a href=${process.env.PUBLIC_API_ENDPOINT}/users/${newCode}/${locale}>Click here</a>
+            </body>
+          </html>`;
+          break;
+      }
+
+      this.sendMail(user.email, ``, emailSubject, emailBody);
 
       success = true;
     }

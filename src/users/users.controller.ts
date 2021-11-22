@@ -22,30 +22,36 @@ export class UsersController {
   }
 
   @Post("forgot")
-  forgot(@Body() { email }: any) {
-    return this.usersService.forgot(email);
+  forgot(@Body() { email, locale }: any) {
+    return this.usersService.forgot(email, locale);
   }
 
   @Post("email-verification")
-  sendEmailVerification(@Body() { email }: any) {
-    return this.usersService.sendEmailVerification(email);
+  sendEmailVerification(@Body() { email, locale }: any) {
+    return this.usersService.sendEmailVerification(email, locale);
   }
 
   //@Redirect(process.env.APP_HOST)
-  @Get(":resetCode")
-  resetPassword(@Param("resetCode") resetCode: string, @Res() res) {
+  @Get(":resetCode/:locale")
+  resetPassword(
+    @Param("resetCode") resetCode: string,
+    @Param("locale") locale: string,
+    @Res() res,
+  ) {
     console.log("password reset");
 
-    this.usersService.resetPassword(resetCode);
+    this.usersService.resetPassword(resetCode, locale);
 
     res.status(301).redirect(process.env.APP_HOST);
   }
 
-  @Get("email-verification/:resetCode")
-  verifyAccount(@Param("resetCode") resetCode: string, @Res() res) {
-    console.log("email verification");
-
-    this.usersService.verifyAccount(resetCode);
+  @Get("email-verification/:resetCode/:locale")
+  verifyAccount(
+    @Param("resetCode") resetCode: string,
+    @Param("locale") locale: string,
+    @Res() res,
+  ) {
+    this.usersService.verifyAccount(resetCode, locale);
 
     res.status(301).redirect(process.env.APP_HOST);
   }
