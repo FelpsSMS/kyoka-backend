@@ -114,6 +114,18 @@ export class UsersService {
     });
   }
 
+  async updatePassword(body) {
+    const newPassword = body.password;
+
+    const saltOrRounds = 10;
+
+    const newPasswordHash = await bcrypt.hash(newPassword, saltOrRounds);
+
+    return this.update(body.userId, {
+      password: newPasswordHash,
+    });
+  }
+
   async mailConfig() {
     const transporter = nodemailer.createTransport({
       host: process.env.EMAIL_HOST,
