@@ -41,7 +41,7 @@ export class CardsService {
         files["audios"].map(async (audio) => {
           const audioUrl = await this.uploadAudioToCloudinary(audio).then(
             (res) => {
-              return res.url;
+              return res.secure_url;
             },
           );
 
@@ -70,7 +70,7 @@ export class CardsService {
         files["images"].map(async (image) => {
           const imageUrl = await this.uploadImageToCloudinary(image).then(
             (res) => {
-              return res.url;
+              return res.secure_url;
             },
           );
 
@@ -192,7 +192,7 @@ export class CardsService {
         files["audios"].map(async (audio) => {
           const audioUrl = await this.uploadAudioToCloudinary(audio).then(
             (res) => {
-              return res.url;
+              return res.secure_url;
             },
           );
 
@@ -221,7 +221,7 @@ export class CardsService {
         files["images"].map(async (image) => {
           const imageUrl = await this.uploadImageToCloudinary(image).then(
             (res) => {
-              return res.url;
+              return res.secure_url;
             },
           );
 

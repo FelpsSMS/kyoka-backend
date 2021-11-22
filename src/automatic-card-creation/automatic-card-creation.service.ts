@@ -45,7 +45,7 @@ export class AutomaticCardCreationService {
           const definition = res.data[0].meanings[0].definitions[0].definition;
           const example = res.data[0].meanings[0].definitions[0].example;
 
-          const languageData = { jp: "jpn", pt: "por" };
+          const languageData = { ja: "jpn", pt: "por" };
           const language = body.language;
 
           let sentence = "";
@@ -111,6 +111,7 @@ export class AutomaticCardCreationService {
                 "https://translate.argosopentech.com/translate", //machine translation api
                 {
                   q: sentence,
+                  target: language,
                   source: "en",
                 },
               );
@@ -142,6 +143,8 @@ export class AutomaticCardCreationService {
             query: word,
             per_page: 4,
           });
+          console.log("IMAGES");
+          console.log(images);
 
           return {
             audio,
