@@ -81,6 +81,18 @@ export class UsersService {
             </body>
           </html>`;
           break;
+
+        case "ja":
+          emailSubject = "Kyoka: パスワードリッセと";
+          emailBody = `
+          <html>
+            <body>
+              パスワードは正常にリセットされました。一時的なパスワードとは<strong>${newPassword}</strong>です。
+              <br>
+              なるべく早くログインしてパスワードを変更してください。
+            </body>
+          </html>`;
+          break;
       }
 
       this.sendMail(user.email, ``, emailSubject, emailBody);
@@ -223,6 +235,21 @@ export class UsersService {
           </body>
         </html>`;
           break;
+
+        case "ja":
+          emailSubject = "Kyoka: アカウント確認";
+          emailBody = `
+          <html>
+            <body>
+              アカウント確認のため、以下のリンクをクリックしてください。念の為、以下のリンクに２４の期限切れを付けています。
+              <br>
+              この要求を置くた人物はあなたではありません場合は、このメールを無視してください。
+              <br>
+              <br>
+              <a href=${process.env.PUBLIC_API_ENDPOINT}/users/email-verification/${newCode}/${locale}>クリックしなさい</a>
+          </body>
+        </html>`;
+          break;
       }
 
       console.log(email);
@@ -271,6 +298,15 @@ export class UsersService {
               Your account has been verified successfully! Thank you for registering.
             </body>
         </html>`;
+          break;
+        case "ja":
+          emailSubject = "Kyoka: アカウント確認";
+          emailBody = `
+            <html>
+              <body>
+               アカウントは正常に確認されました。登録よろしくお願いします。
+              </body>
+          </html>`;
           break;
       }
 
@@ -334,6 +370,21 @@ export class UsersService {
               <a href=${process.env.PUBLIC_API_ENDPOINT}/users/${newCode}/${locale}>Click here</a>
             </body>
           </html>`;
+          break;
+        case "ja":
+          emailSubject = "Kyoka: パスワードリセット";
+          emailBody = `
+            <html>
+              <body>
+                このメールアドレスでパスワードリセット要求を送られました。以下のリンクをクリックするとパスワードをリセットされます。
+                以下のリンクは5分の期限切れを付けています。
+                <br>
+                この要求を置くりました方はあなたではありません場合は、このメールを無視してください。
+                <br>
+                <br>
+                <a href=${process.env.PUBLIC_API_ENDPOINT}/users/${newCode}/${locale}>クリックしなさい</a>
+              </body>
+            </html>`;
           break;
       }
 
