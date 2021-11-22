@@ -131,7 +131,7 @@ export class AutomaticCardCreationService {
                   res.data,
                 );
 
-                return audio.url;
+                return audio.secure_url;
               });
           } else {
             sentence = word;
