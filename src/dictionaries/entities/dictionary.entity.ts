@@ -9,6 +9,9 @@ export class Dictionary {
 
   @Prop({ required: true })
   name: string;
+
+  @Prop({ required: true })
+  language: string;
 }
 
 export const DictionarySchema = SchemaFactory.createForClass(Dictionary);
