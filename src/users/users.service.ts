@@ -141,6 +141,12 @@ export class UsersService {
     });
   }
 
+  updateUserDefaultDeck(body) {
+    return this.update(body.userId, {
+      defaultDeckForGeneratedCards: body.defaultDeckForGeneratedCards,
+    });
+  }
+
   updateActiveDictionary(body) {
     return this.update(body.userId, {
       activeDictionary: body.activeDictionary,

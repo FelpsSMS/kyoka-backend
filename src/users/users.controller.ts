@@ -71,6 +71,11 @@ export class UsersController {
     return this.usersService.updateUserInfo(body);
   }
 
+  @Post("update-user-default-deck")
+  updateUserDefaultDeck(@Body() body: any) {
+    return this.usersService.updateUserDefaultDeck(body);
+  }
+
   @Post("update-active-dictionary")
   updateActiveDictionary(@Body() body: any) {
     return this.usersService.updateActiveDictionary(body);
