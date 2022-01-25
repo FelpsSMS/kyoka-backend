@@ -24,6 +24,9 @@ export class Session {
 
   @Prop({ required: true, default: 0 })
   numberOfCardsToReview: number;
+
+  @Prop({ required: true, default: 0 })
+  numberOfNewCardsReviewed: number;
 }
 
 export const SessionSchema = SchemaFactory.createForClass(Session);
