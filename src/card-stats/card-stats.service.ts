@@ -53,7 +53,7 @@ export class CardStatsService {
     const result = srsalgo({
       repetitions: body.repetitions,
       efactor: body.efactor,
-      dueDate: body.dueDate,
+      //dueDate: body.dueDate,
       pass: body.pass,
     });
 
