@@ -223,6 +223,8 @@ export class UsersService {
               <br>
               <br>
               <a href=${process.env.PUBLIC_API_ENDPOINT}/users/email-verification/${newCode}/${locale}>Clique aqui</a>
+              <br>
+              Ou cole este link no seu navegador: ${process.env.PUBLIC_API_ENDPOINT}/users/email-verification/${newCode}/${locale}
           </body>
         </html>`;
           break;
@@ -238,6 +240,8 @@ export class UsersService {
               <br>
               <br>
               <a href=${process.env.PUBLIC_API_ENDPOINT}/users/email-verification/${newCode}/${locale}>Click here</a>
+              <br>
+              Or paste this link in your browser: ${process.env.PUBLIC_API_ENDPOINT}/users/email-verification/${newCode}/${locale}
           </body>
         </html>`;
           break;
@@ -253,6 +257,8 @@ export class UsersService {
               <br>
               <br>
               <a href=${process.env.PUBLIC_API_ENDPOINT}/users/email-verification/${newCode}/${locale}>クリックしなさい</a>
+              <br>
+              それとも、このリンクをブラウザに貼ってください ${process.env.PUBLIC_API_ENDPOINT}/users/email-verification/${newCode}/${locale}
           </body>
         </html>`;
           break;
@@ -358,6 +364,8 @@ export class UsersService {
               <br>
               <br>
               <a href=${process.env.PUBLIC_API_ENDPOINT}/users/${newCode}/${locale}>Clique aqui</a>
+              <br>
+              Ou cole este link no seu navegador: ${process.env.PUBLIC_API_ENDPOINT}/users/${newCode}/${locale}
             </body>
           </html>`;
           break;
@@ -374,6 +382,8 @@ export class UsersService {
               <br>
               <br>
               <a href=${process.env.PUBLIC_API_ENDPOINT}/users/${newCode}/${locale}>Click here</a>
+              <br>
+              Or paste this link in your browser: ${process.env.PUBLIC_API_ENDPOINT}/users/${newCode}/${locale}
             </body>
           </html>`;
           break;
@@ -389,6 +399,8 @@ export class UsersService {
                 <br>
                 <br>
                 <a href=${process.env.PUBLIC_API_ENDPOINT}/users/${newCode}/${locale}>クリックしなさい</a>
+                <br>
+                それとも、このリンクをブラウザに貼ってください ${process.env.PUBLIC_API_ENDPOINT}/users/${newCode}/${locale}
               </body>
             </html>`;
           break;
